@@ -1,0 +1,66 @@
+body {
+    width: 100%;
+    margin: 0 auto;
+    font-family: Arial, sans-serif;
+}
+h1 {
+    padding-top: 20px;
+    text-align: center;
+}
+h1 .title {
+    margin: 0 16px;
+}
+h1 img {
+    width: 24px;
+}
+#wrap {
+    width: 100%;
+    margin: 0 auto;
+    text-align: center;
+}
+img {
+    width: 50%;
+}
+#calendar {
+    margin: 0 auto;
+    text-align: center;
+    width: 50%;
+    border: 1px solid #cccccc;
+    height: 400px;
+    border-collapse: collapse;
+}
+#calendar th {
+    background-color: pink;
+}
+#calendar thead tr th {
+    width: 14%;
+    border: 1px solid #cccccc;
+    height: 50px;
+}
+#calendar tr td {
+    border: 1px solid #cccccc;
+}
+#calendar thead tr th:first-child {
+    color: red;
+}
+#calendar thead tr th:last-child {
+    color: blue;
+}
+#calendar tbody tr:nth-child(2) td:first-child,
+#calendar tbody tr:nth-child(3) td:first-child,
+#calendar tbody tr:nth-child(4) td:first-child,
+#calendar tbody tr:nth-child(5) td:first-child,
+#calendar tbody tr:nth-child(6) td:first-child {
+    color: red;
+}
+#calendar tbody tr:nth-child(1) td:last-child,
+#calendar tbody tr:nth-child(2) td:last-child,
+#calendar tbody tr:nth-child(3) td:last-child,
+#calendar tbody tr:nth-child(4) td:last-child,
+#calendar tbody tr:nth-child(5) td:last-child {
+    color: blue;
+}
+.holy {
+    color: red;
+}
+
