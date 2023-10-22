@@ -1,0 +1,96 @@
+body {
+    width: 100%;
+    margin: 0;
+}
+ul li {
+    list-style: none;
+}
+#wrap {
+    width: 90%;
+    margin: 0 auto;
+    text-align: center;
+    padding-top: 80px;
+    padding-bottom: 100px;
+}
+img {
+    width: 20%;
+    margin: -20px;
+}
+.form_wrap {
+    width: 420px;
+    margin: 0 auto;
+    border: 1px solid #c8c8c8;
+    border-radius: 5px;
+    line-height: 2;
+    padding: 0 0 80px 0;
+}
+.form_wrap li:nth-child(2), 
+.form_wrap li:nth-child(4) {
+    margin-bottom: 12px;
+}
+.form_wrap li:nth-child(1) {
+    font-size: 30px;
+    color: #6072B1;
+    padding-top: 30px;
+}
+.form_wrap li input {
+    width: 250px;
+    height: 30px;
+    padding-left: 8px;
+}
+.form_wrap li:nth-child(2) input:focus {
+    outline: 1px solid #6072B1;
+    border-radius: 5px;
+}
+.form_wrap li:nth-child(3) input:focus {
+    outline: 1px solid #6072B1;
+    border-radius: 5px;
+}
+.form_wrap li:nth-child(4) {
+    text-align: left;
+    margin-left: 72px;
+    margin-top: 10px;
+    font-size: 14px;
+    color: #909090;
+}
+.form_wrap li:nth-child(4) input {
+    width: 20px;
+    height: 14px;
+}
+.form_wrap li:nth-child(5) input {
+    width: 264px;
+    height: 40px;
+    margin-top: 6px;
+    background-color: #6072B1;
+    color: #ffffff;
+    border: 0;
+    border-radius: 5px;
+    font-size: 18px;
+    font-weight: bold;
+}
+.find {
+    margin-top: 16px;
+}
+.find span {
+    font-size: 16px;
+}
+.find span:first-child {
+    margin-left: 8px;
+}
+.find .line {
+    padding: 0 8px 0 12px;
+}
+.easy {
+    width: 100%;
+    margin-top: 24px;
+}
+.easy span {
+    width: 33%;
+}
+.easy img {
+    width: 50px;
+    margin: 4px 10px;
+}
+.easy p {
+    margin: 0 0 6px 0;
+}
