@@ -25,6 +25,7 @@ body {
     background-color: transparent;
     outline: none;
     border: none;
+    font-size: 40px;
 }
 .button_wrap {
     margin: 0 auto;
