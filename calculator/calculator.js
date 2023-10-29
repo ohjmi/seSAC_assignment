@@ -3,31 +3,16 @@
 //    console.log(i);
 // }
 
-// function button() {
-//    document.getElementById('show')
-// }
-
-// 함수 이름(7){
-//    레이블 
-// }
-
-// function button(button) {
-//    let show = document.getElementById('show');
-//    show.value = show.value += button;
-// }
-
-// function result() {
-//    let show = document.getElementById('show');
-//    let result = eval(show.value);
-//    document.getElementById('result').value = result;
-// }
-
-// function clear() {
-//    document.getElementById('show').value = "";
-//    document.getElementById('result').value = "";
-
-// }
-
-function button(i) {
-   console.log(i +1);
+function button(num) {
+   document.getElementById('show').value += num;
+   console.log(num);
+}
+function calc() {
+   let show = document.getElementById('show').value;
+   let result = eval(show.value); 
+   document.getElementById('result').value = result;
+}
+function clear() {
+   document.getElementById('show').value = "";
+   document.getElementById('result').value = "";
 }
