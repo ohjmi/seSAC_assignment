@@ -6,8 +6,7 @@
 </head>
 <body>
     <div class="calculator">
-        <div class="input_box1"><input type="text" id="show" readonly></div>
-        <div class="input_box2"><input type="text" id="result" readonly></div>
+        <div class="input_box"><input type="text" id="show" readonly></div>
         <div class="button_wrap">
             <div class="line">
                 <button onclick="button('+')">+</button>
@@ -19,13 +18,13 @@
                 <button onclick="button(7)">7</button>
                 <button onclick="button(8)">8</button>
                 <button onclick="button(9)">9</button>
-                <button class="calc" onclick="calc('')">=</button>
+                <button class="calc" onclick="calc()">=</button>
             </div>
             <div class="line">
                 <button onclick="button(4)">4</button>
                 <button onclick="button(5)">5</button>
                 <button onclick="button(6)">6</button>
-                <button class="clear" onclick="clear('')">C</button>
+                <button class="clear" onclick="clear()">C</button>
             </div>
             <div class="line">
                 <button onclick="button(1)">1</button>

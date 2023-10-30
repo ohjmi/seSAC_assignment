@@ -13,29 +13,14 @@ body {
     background-color: pink;
     border-radius: 5px;
 }
-.input_box1 {
+.input_box {
     margin: 0 auto;
     width: 90%;
     height: 120px;
     background-color: palevioletred;
     border-radius: 5px;
 }
-.input_box2 {
-    margin: 0 auto;
-    width: 90%;
-    height: 80px;
-    background-color: palegoldenrod;
-    border-radius: 5px;
-}
-.input_box1 input {
-    width: 100%;
-    height: 100%;
-    background-color: transparent;
-    outline: none;
-    border: none;
-    font-size: 40px;
-}
-.input_box2 input {
+.input_box input {
     width: 100%;
     height: 100%;
     background-color: transparent;
@@ -48,24 +33,6 @@ body {
     width: 90%;
     margin-top: 40px;
 }
-/* .line {
-    width: 100%;
-    margin-bottom: 20px;
-}
-button {
-    width: 23%;
-    margin-right: 2%;
-    height: 60px;
-    border-radius: 5px;
-    border: none;
-    background-color: palevioletred;
-    font-size: 18px;
-    font-weight: bold;
-    cursor: pointer;
-}
-button:last-child {
-    margin: 0;
-} */
 .line {
     width: 100%;
     display: flex;
