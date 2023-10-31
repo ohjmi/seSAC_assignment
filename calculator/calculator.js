@@ -7,6 +7,8 @@ function calc() {
    let result = eval(show); 
    document.getElementById('show').value = result;
 }
-function clear() {
+
+function reset() {
    document.getElementById('show').value = "";
 }
+
