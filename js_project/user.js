@@ -1,7 +1,6 @@
 const fs = require('fs');
 
 
-
 function generateID() {
     return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
       var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
@@ -9,7 +8,6 @@ function generateID() {
     });
   }
 
-  console.log(generateID());
 
 
 const firstname = ['오', '김', '이', '박', '최', '정', '강', '조', '윤', '장'];
@@ -23,7 +21,6 @@ function generateName() {
     return `${first}${last}`;
 };
 const fullName = generateName();
-console.log(fullName);
 
 
 
@@ -32,7 +29,6 @@ function generateAge(year) {
     const age = currentYear - year;
     return age;
 }
-console.log(generateAge());
 
 
 
@@ -45,8 +41,6 @@ function generateBirthdate() {
     
     return `${year}-${month}-${day}`;
 };
-console.log(generateBirthdate());
-
 
 
 function generateGender() {
@@ -67,71 +61,48 @@ function generateAddress () {
     return `${city} ${town} ${streetTotal}${street2}`;
 
 };
-console.log(generateGender());
-console.log(generateAddress());
 
 
 
-// const userArray = [];
-// for (let i = 0; i < 1000; i++) {
-    
-//     const birthdate = generateBirthdate(); 
-//     const year = parseInt(birthdate.split('-')[0]); 
-//     const age = generateAge(year); 
-//     const user =
-    
-//     {   
-//         Id: generateID(),
-//         Name: generateName(),
-//         Gender: generateGender(),
-//         Age: age,
-//         Birthdate: birthdate,
-//         Address: generateAddress()
-
-//     };
-//     userArray.push(user);
-// }
-
-function generateUser() {
-    const birthdate = generateBirthdate();
-    const year = parseInt(birthdate.split('-')[0]);
-    const age = generateAge(year);
-    const user = {
-      Id: generateID(),
-      Name: generateName(),
-      Gender: generateGender(),
-      Age: age,
-      Birthdate: birthdate,
-      Address: generateAddress(),
+    function generateUser() {
+    const birthdate = generateBirthdate(); 
+    const year = parseInt(birthdate.split(' ')[0]); 
+    const age = generateAge(year); 
+    const user =
+    {   
+        Id: generateID(),
+        Name: generateName(),
+        Gender: generateGender(),
+        Age: age,
+        Birthdate: birthdate,
+        Address: generateAddress()
     };
     return user;
-  }
-  
+}
+
+
   const userArray = [];
   for (let i = 0; i < 1000; i++) {
     userArray.push(generateUser());
   }
 
-console.log('------------------------');
-console.log(userArray);
+function stringToCSV(array) {
+    const header = Object.keys(array[0]).join(',') + '\n';
+    const csv = array.map(obj => Object.values(obj).join(',')).join('\n');
+    return header + csv;
+}
 
+function createCSVFile(data, userData) {
+    const csvData = stringToCSV(data);
 
-// function stringToCSV(array) {
-//     const header = Object.keys(array[0]).join(',') + '\n';
-//     const csv = array.map(obj => Object.values(obj).join(',')).join('\n');
-//     return header + csv;
-// }
+    fs.writeFile(userData, csvData, {encoding:'utf-8'}, (err) => {
+        if (err) {
+            console.error(err);
+            return;
+        }
+        // console.log(`CSV파일 ${userData}이 생성되었습니다.`);
+    });
+}
+createCSVFile(userArray, 'userData2.csv');
 
-// function createCSVFile(data, userData) {
-//     const csvData = stringToCSV(data);
-
-//     fs.writeFile(userData, csvData, {encoding:'utf-8'}, (err) => {
-//         if (err) {
-//             console.error(err);
-//             return;
-//         }
-//         console.log(`CSV파일 ${userData}이 생성되었습니다.`);
-//     });
-// }
-// createCSVFile(userArray, 'userData.csv');
-
+module.exports =  { generateUser };

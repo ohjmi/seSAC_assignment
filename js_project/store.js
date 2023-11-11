@@ -8,7 +8,6 @@ function generateID() {
     });
   }
 
-  console.log(generateID());
 
 
   const names = ['스타벅스', '이디야', '커피빈', '투썸플레이스', '파스쿠찌', '할리스', '폴바셋', '엔젤리너스', '탐앤탐스', '까페베네'];
@@ -21,7 +20,6 @@ function generateID() {
     
     return `${name} ${branch}${branchNum}호점`;
   }
-  console.log(generateName());
 
 
 
@@ -38,11 +36,10 @@ function generateAddress() {
   return `${city} ${town} ${streetTotal}${street2}`;
 
 };
-console.log(generateAddress());
 
 
-storeArray = [];
-for (let i = 0; i < 100; i++) {
+
+function generateStore() {
   const type = generateName().split(' ')[0];
   const store = 
   
@@ -53,12 +50,14 @@ for (let i = 0; i < 100; i++) {
     Address: generateAddress()
     
   };
-  storeArray.push(store);
+  return store;
 
 }
 
-console.log('--------------------------------');
-console.log(storeArray);
+const storeArray = [];
+for (let i = 0; i < 100; i++) {
+  storeArray.push(generateStore());
+}
 
 function stringToCSV(array) {
   const header = Object.keys(array[0]).join(',') + '\n';
@@ -75,11 +74,11 @@ function createCSVFile(data, storeData) {
       return;
 
     }
-    console.log(`CSV파일 ${storeData}이 생성되었습니다.`);
+    // console.log(`CSV파일 ${storeData}이 생성되었습니다.`);
 
   });
 
 }
 createCSVFile(storeArray, 'storeData.csv');
 
-module.exports = storeArray;
+module.exports = { generateStore };
