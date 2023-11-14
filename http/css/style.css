@@ -1,0 +1,204 @@
+@import url('https://fonts.googleapis.com/css2?family=Sometype+Mono:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@100;200;300;400;500;600;700;800&display=swap');
+
+
+* {
+    box-sizing: border-box;
+}
+html {
+    /* font-family: 'Sometype Mono', monospace; */
+    font-family: 'Montserrat', sans-serif;
+}
+body {
+    width: 100%;
+    margin: 0;
+    background: linear-gradient(to bottom, #C9A9D4, #C7A9D8 );
+}
+.wrap {
+    width: 100%;
+    height: 500px;
+    margin:  0 auto;
+    padding-top: 200px;
+    text-align: center;
+    background-image: url('../static/images/main.jpg');
+    background-repeat: no-repeat;
+    background-size: contain;
+    background-position: center;
+}
+.title {
+    display: flex;
+    justify-content: center;
+    padding-top: 60px;
+}
+.title p {
+    font-size: 50px;
+    font-weight: bold;
+    padding-left: 10px;
+}
+.title p:nth-child(1) {
+    position: relative;
+    animation-name: show1;
+    animation-duration: 2s;
+    animation-timing-function: ease;
+    animation-iteration-count: 1;
+    animation-direction: alternate;
+}
+.title p:nth-child(2) {
+    position: relative;
+    animation-name: show2;
+    animation-duration: 2.5s;
+    animation-timing-function: ease;
+    animation-iteration-count: 1;
+    animation-direction: normal;
+}
+.title p:nth-child(3) {
+    position: relative;
+    animation-name: show3;
+    animation-duration: 3s;
+    animation-timing-function: ease;
+    animation-iteration-count: 1;
+    animation-direction: alternate;
+}
+.title p:nth-child(4) {
+    position: relative;
+    animation-name: show4;
+    animation-duration: 3.5s;
+    animation-timing-function: ease;
+    animation-iteration-count: 1;
+    animation-direction: alternate;
+}
+.title p:nth-child(5) {
+    position: relative;
+    animation-name: show5;
+    animation-duration: 4s;
+    animation-timing-function: ease;
+    animation-iteration-count: 1;
+    animation-direction: alternate;
+}
+@keyframes show1 {
+    0% {opacity: 0; top: 0;}
+    100% {opacity: 1; top: 50px}
+}
+@keyframes show2 {
+    0% {opacity: 0; top: 0;}
+    100% {opacity: 1; top: 50px}
+}
+@keyframes show3 {
+    0% {opacity: 0; top: 0;}
+    100% {opacity: 1; top: 50px}
+}
+@keyframes show4 {
+    0% {opacity: 0; top: 0;}
+    100% {opacity: 1; top: 50px}
+}
+@keyframes show5 {
+    0% {opacity: 0; top: 0;}
+    100% {opacity: 1; top: 50px}
+}
+.form_wrap {
+    width: 450px;
+    height: 550px;
+    margin: 0 auto;
+    background-color: #ffffff30;
+    position: relative;
+    margin-bottom: 50px;
+    border-radius: 5px;
+}
+.form_wrap::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: white;
+    filter: blur(20px);
+    opacity: 0.1;
+    z-index: -1;
+    border-radius: 5px;
+}
+img {
+    width: 20%;
+}
+ul {
+    padding: 0 30px;
+}
+ul li {
+    list-style: none;
+    text-align: left;
+    line-height: 2;
+    font-size: 18px;
+    font-weight: 500;
+}
+.form_wrap ul li input {
+    background-color: transparent;
+    border: none;
+    outline: none;
+}
+.form_wrap ul li:nth-child(2) {
+    width: 100%;
+    height: 40px;
+    background-color: #53cbbf90;
+    border-radius: 5px;
+    margin-bottom: 10px;
+}
+.form_wrap ul li:nth-child(2) input {
+    padding: 12px 0 0 8px;
+    font-size: 14px;
+}
+.form_wrap ul li:nth-child(2) input::placeholder {
+    color: white;
+}
+.form_wrap ul li:nth-child(4) {
+    width: 100%;
+    height: 40px;
+    background-color: #53cbbf90;
+    border-radius: 5px;
+    margin-bottom: 40px;
+}
+.form_wrap ul li:nth-child(4) input {
+    padding: 12px 0 0 8px;
+    font-size: 14px;
+}
+.form_wrap ul li:nth-child(4) input::placeholder {
+    color: white;
+}
+.form_wrap ul li:nth-child(5) {
+    width: 100%;
+    height: 54px;
+    position: relative;
+    border-radius: 5px;
+    text-align: center;
+    background-color: pink;
+    transition: all 0.7s ease-out;
+    background: linear-gradient(270deg, #c971d8, #7eb8c7, #9faad700, #7eb8c700);
+    background-position: 1% 50%;
+    background-size: 300% 300%;
+    text-decoration: none;
+}
+.form_wrap ul li:nth-child(5)::before {
+    content: "";
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    background-color: #c87ace;
+    border-radius: 5px;
+}
+.form_wrap ul li:nth-child(5):hover {
+    color: #fff;
+    background-position: 99% 50%;
+}
+.form_wrap ul li:nth-child(5) input {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    font-size: 24px;
+    font-weight: 600;
+    cursor: pointer;
+}
+.form_wrap ul li:nth-child(5) input:hover {
+    color: #fff;
+}
