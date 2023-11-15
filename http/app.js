@@ -1,5 +1,6 @@
 const http = require('http');
 const fs = require('fs').promises;
+const path = require('path');
 
 const SUCCESS = 200;
 const SERVER_ERROR = 500;
@@ -39,6 +40,7 @@ const server = http.createServer(async (req, res) => {
                 res.end(data);
             } else if (req.url.startsWith('/static/')) {
                 const extname = filePath.match(/\.([^.]+)$/)[1];
+                console.log(extname);
                 const contentType = getContentType(extname);
                 const data = await fs.readFile(filePath);
                 res.writeHead(SUCCESS, {'Content-Type': contentType});
@@ -72,13 +74,13 @@ server.listen(port, () => {
 
 function getContentType(extname) {
     switch (extname) {
-      case '.html':
+      case 'html':
         return 'text/html; charset=utf-8';
-      case '.css':
+      case 'css':
         return 'text/css; charset=utf-8';
-      case '.js':
+      case 'js':
         return 'text/javascript; charset=utf-8';
-      case '.jpg':
+      case 'jpg':
         return 'image/jpg';
       default:
         return 'application/octet-stream';
