@@ -24,12 +24,17 @@ function orderExtract() {
         const rowData = row.split(',');
         return rowData[idIndex];
     });
-
-    // 랜덤으로 하나의 Id 값을 선택
-    const randomIndex = Math.floor(Math.random() * idList.length);
-    return idList[randomIndex];
+    
+    return idList;
 }
-// console.log(orderExtract());
+
+const orderIdList = orderExtract();
+// 랜덤으로 하나의 Id 값을 선택
+function randomOrderId() {
+    const randomIndex = Math.floor(Math.random() * orderIdList.length);
+    return orderIdList[randomIndex];
+}
+// console.log(randomOrderId());
 
 
 function itemExtract() {
@@ -51,14 +56,16 @@ function itemExtract() {
         const rowData = row.split(',');
         return rowData[idIndex];
     });
-
-    // 랜덤으로 하나의 Id 값을 선택
-    const randomIndex = Math.floor(Math.random() * idList.length);
-    return idList[randomIndex];
+    return idList;
 }
 // console.log(itemExtract());
+const itemIdList = itemExtract();
 
-
+function randomItemId() {
+    const randomIndex = Math.floor(Math.random() * itemIdList.length);
+    return itemIdList[randomIndex];
+}
+// console.log(randomItemId());
 
 
 function generateID() {
@@ -74,15 +81,15 @@ function generateOrderItem() {
     const orderItem =
     {
         Id: generateID(),
-        OrderId: orderExtract(),
-        ItemId: itemExtract(),
+        OrderId: randomOrderId(),
+        ItemId: randomItemId(),
     };
     return orderItem;
 }
 console.log(generateOrderItem());
 
 const orderItemArray = [];
-for (let i = 0; i < 1000; i++) {
+for (let i = 0; i < 50000; i++) {
     orderItemArray.push(generateOrderItem());
 }
 console.log(orderItemArray);
