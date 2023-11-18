@@ -6,15 +6,20 @@ const path = require('path');
 const port = 3000;
 
 
-const SUCCESS = 200;
-const SERVER_ERROR = 500;
-const NOT_FOUND = 404;
+// const SUCCESS = 200;
+// const SERVER_ERROR = 500;
+// const NOT_FOUND = 404;
 
 app.use(express.static('public'));
 
+app.get('/favicon.ico', (req, res) => {
+    res.status(204).end(); // 204 No Content를 반환하여 응답을 종료
+  });
+
 app.get('/:filename', (req, res) => {
     const {filename} = req.params
-    const htmlFilePath = path.join(__dirname, 'public', filename);
+    const htmlFilePath = path.join(__dirname, 'public',  `${filename}.html`);
+    console.log(htmlFilePath);
     res.sendFile(htmlFilePath, (err) => {
         if (err) {
             console.error('파일 전송 오류', err);
@@ -22,7 +27,6 @@ app.get('/:filename', (req, res) => {
         }
     });
 });
-
 
 
 
