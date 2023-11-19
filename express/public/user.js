@@ -1,160 +1,109 @@
-const http = require('http');
-const fs = require('fs').promises;
-const path = require('path');
-// const querystring = require('querystring');
-// const parse = querystring.parse;
-// const parse = require('querystring').parse;
+document.addEventListener('DOMContentLoaded', async () => {
+    const form = document.getElementById('form');
+    const username = document.getElementById('username');
 
-// 객체 디스트럭처링
-// const { parse } = require('querystring');
+    // 페이지 최종 로딩 시 백엔드에 사용자 데이터 요청
+    await updateTable();
 
-const SUCCESS = 200;
-const SERVER_ERROR = 500;
-const NOT_FOUND = 404;
+    form.addEventListener('submit', async (ev) => {
+        // 폼에 원래 있던 본연의 기능인 다른 페이지로 요청하는 것 하지 못하게
+        ev.preventDefault();
 
-const users = {};
+        const name = username.value;
 
-// 서버의 개체 생성
-const server = http.createServer(async (req, res) => {
-    console.log(req.method, req.url);
-
-    try {
-        if (req.method === 'GET' && req.url.startsWith('/static/')) {
-            const filePath = '.' + req.url;
-            const data = await fs.readFile(filePath);
-            const contentType = getContentType(filePath);
-            res.writeHead(200, {'Content-Type': contentType});
-            return res.end(data);
+        if (!name) {
+            alert('이름이 없네요');
+            return;
         }
 
-        if (req.method === 'GET') {
-            if (req.url === '/') {
-                const data = await fs.readFile('./index.html');
-                res.writeHead(SUCCESS, { 'Content-Type': 'text/html; charset=utf-8' });
-                res.end(data);
-            } else if (req.url == '/about') {
-                const data = await fs.readFile('./about.html');
-                res.writeHead(SUCCESS, { 'Content-Type': 'text/html; charset=utf-8' });
-                res.end(data);
-            } else if (req.url === '/user') {
-                res.writeHead(SUCCESS, { 'Content-Type': 'text/plain; charset=utf-8' });
-                res.end(JSON.stringify(users));
-            } else {
-                const imageMatch = req.url.match(/^\/images\/(.+)$/);
-                if (imageMatch) {
-                    const imageName = imageMatch[1];
-                    const imagePath = './static/' + imageName;
-                    try {
-                        const contentType = getContentType(imagePath);
-                        const data = await fs.readFile(imagePath);
-                        res.writeHead(SUCCESS, { 'Content-Type': contentType });
-                        res.end(data);
-                    } catch (error) {
-                        res.writeHead(NOT_FOUND, { 'Content-Type': 'text/html; charset=utf-8' });
-                        res.end('Not Found. 없어~~~~~');
-                    }
-                }
-            }
-        } else if (req.method === 'POST') {
-            if (req.url === '/user') {
+        // fetch를 통해서 내가 원하는 API의 정보를 불러온다
+        // POST 요청을 한것 이름을 JSON 형식으로 바디(Body)에 담아서
+        try {
 
-                // 요청을 생성할 때
-                // 요청 request를 파싱해서 처리
-                let body = '';
-
-                req.on('data', (data) => {
-                    body += data;
-                });
-                req.on('end', () => {
-                    console.log('요청 온 내용은??', body);
-                    const formData = JSON.parse(body);
-                    console.log('파싱한 후??', formData);
-
-                    const username = formData.name;
-                    console.log('사용자 이름은??', username);
-
-                    const id = Date.now();
-                    users[id] = username;
-                    console.log('최종 객체:', users);
-                });
-                // 결과 response 주는 코드
-                res.writeHead(201, { 'Content-Type': 'text/html; charset=utf-8' });
-                res.end('등록 성공');
-            }
-            // 요청을 수정할 때
-        } else if (req.method === 'PUT') {
-            // 수정 명령어
-            if (req.url.startsWith('/user/')) {
-                const key = req.url.split('/')[2];
-                let body = '';
-                req.on('data', (data) => {
-                    body += data;
-                });
-                req.on('end', () => {
-                    // 다 온 데이터를 기반으로 프로세싱
-                    console.log('PUT Body', body);
-                    // 수정 코드를 작성하시오
-                    const formData = JSON.parse(body);
-                    users[key] = formData.name;
-                })
-            }
-            res.writeHead(200, { 'Content-Type': 'text/plain; charset=utf-8' });
-            res.end('수정 성공');
-
-
-        } else if (req.method === 'DELETE') {
-            // 요청을 삭제할 때
-            // 요청에 대한 파싱
-            // 1. url에 /users/ 시작하는걸 찾아서
-            // 2. 그 뒤에 있는 글자를 읽어서 key로 처리하는 것
-            // 3. 그 키를 users라는 객체안에서 삭제
+            const response = await fetch ('/user', {
+                method: 'POST',
+                headers: {'Content-Type':'application/json'},
+                body: JSON.stringify({name}),
+            });
             
-            if (req.url.startsWith('/user/')) {
-                try {
-                    const key = req.url.split('/')[2];
-                    delete users[key];
-
-                    // 요청에 대한 응답 결과를 준다.
-                    res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8' });
-                    // res.end(JSON.stringify(users)); // 삭제하고 난 후의 목록을 보여준다.
-                    res.end('삭제 성공');
-                } catch (error) {
-                    console, error('삭제 중 오류 발생:', error);
-                    res.writeHead(500, { 'Content-Type': 'text/plain; charset=utf-8' });
-                    res.end('서버에서 알 수 없는 오류가 발생하여 삭제에 실패하였습니다. 관리자에게 문의하세요.');
-                }
+            if (response.ok) {
+                alert('등록 성공');
+                username.value = ''; //등록 완료 시 입력 컬럼 초기화
+                // 등록 성공 시 화면 컴포넌트 추가
+                updateTable();
             } else {
-                res.writeHead(NOT_FOUND, { 'Content-Type': 'text/html; charset=utf-8' });
-                res.end('Not Found');
+                const errorMessage = await response.text();
+                alert(`등록 실패:${errorMessage}`)
             }
-
+        } catch (error) {
+            console.error('등록 중 오류 발생:', error);
+            alert('등록 중 오류 발생');
         }
-    } catch (err) {
-        console.error('오류발생', err.message);
-        res.writeHead(SERVER_ERROR, { 'Content-Type': 'text/html; charset=utf-8' });
-        res.end('서버 오류...');
-    }
+    });
 });
 
-const port = 3000;
-server.listen(port, () => {
-    console.log(`${port}번 포트 열려있음`);
-});
-
-// filePath(URL 경로)를 기반으로,
-// 요청한 내용이 무엇인지 판단해서, 그 content-Type을 반환핱다.
-function getContentType(filePath) {
-    const extname = path.extname(filePath);
-    switch (extname) {
-        case '.html':
-          return 'text/html; charset=utf-8';
-        case '.css':
-          return 'text/css; charset=utf-8';
-        case '.js':
-          return 'text/javascript; charset=utf-8';
-        case '.jpg':
-          return 'image/jpg';
-        default:
-          return 'application/octet-stream';
-      }
+async function updateTable() {
+    // 갱신을 위해서 최신 정보를 가져옴 fetch
+    await fetch('/user')
+        .then(response => response.json())
+        .then(users => displayUsers(users))
+        .catch(error => console.error('사용자 정보 불러오기 실패:', error));
 }
+
+function displayUsers(users) {
+    // users에는 json 포맷의 사용자 데이터를 다 가지고 있음
+    const userTable = document.getElementById('userTable');
+    userTable.innerHTML = ''; // 테이블 데이터 초기화
+
+    if (Object.keys(users).length === 0) {
+        const messageRow = document.createElement('div');
+        messageRow.textContent = '등록된 사용자가 없습니다.';
+        userTable.appendChild(messageRow);
+    } else {
+        for (const key in users) {
+            const row = document.createElement('div');
+            row.innerHTML = `<strong>ID:</strong>${key}, <strong>Name:<strong> ${users[key]}
+                            <button onclick ="modifyUser(${key})">수정</button>
+                            <button onclick="deleteUser(${key})">삭제</button>`;
+            userTable.appendChild(row);
+        }
+    }
+}
+
+async function modifyUser(userId) {
+    
+    const newName = prompt('수정할 이름을 입력하세요.');
+    const response = await fetch(`/user/${userId}`,  {
+        method: 'PUT',
+        headers: {'Content-Type':'application/json'},
+        body: JSON.stringify({name: newName}) // 새로운 이름
+    });
+    if (response.ok) {
+        alert('수정 성공');
+        await updateTable();
+    } else {
+        const errorMessage = await (response).text();
+        alert (`수정 실패: ${errorMessage}`);
+    }
+}
+
+
+async function deleteUser(userId) {
+    // 사용자에게 삭제 유뮤 확인
+    const confirmDelete = confirm(`${userId}를 정말로 삭제하시겠습니까?`);
+    if (confirmDelete) {
+        const response = await fetch(`/user/${userId}`, {
+            method: 'DELETE' ,
+        });
+        
+        if (response.ok) {
+            // 화면 갱신
+            alert('삭제 성공');
+            await updateTable();
+        } else {
+            const errorMessage = await response.text();
+            throw new Error(`삭제 실패: ${errorMessage}`);
+        }
+    }
+}
+
