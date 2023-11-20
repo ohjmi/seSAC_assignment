@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>user table</title>
+        <style>
+            table {
+                width: 100%;
+                border-collapse: collapse;
+            }
+            table thead {
+                background-color: palevioletred;
+            }
+            table thead tr th  {
+                text-align: left;
+                padding: 14px 0;
+                font-size: 18px;
+            }
+            table thead tr th:first-child  {
+                padding-left: 4px;
+            }
+            table tbody tr td {
+                padding: 8px 0;
+            }
+            table tbody tr td:first-child {
+                padding-left: 4px;
+            }
+            table tbody tr:nth-child(2n+0) {
+                background-color: pink;
+            }
+        </style>
+    </head>
+    <body>
+        <body>
+            <h1>사용자 테이블</h1>
+            <table>
+                <thead>
+                    <tr>
+                        {% for column in data[0] %}
+                            <th>{{ column }}</th>
+                        {% endfor %}
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for row in data.slice(1) %}
+                        <tr>
+                            {% for column in row %}
+                                <td>{{ column }}</td>
+                            {% endfor %}
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </body>
+    </body>
+</html>
