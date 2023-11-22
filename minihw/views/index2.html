@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>user table</title>
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        /* table thead {
+                background-color: palevioletred;
+            } */
+        th {
+            background-color: palevioletred;
+        }
+
+        th,
+        td {
+            padding: 8px;
+            text-align: left;
+        }
+
+        table tbody tr:nth-child(2n+0) {
+            background-color: pink;
+        }
+
+        .pagination {
+            width: 100%;
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .pagination a {
+            padding: 8px 14px;
+            margin: 10px;
+            display: inline-block;
+            text-decoration: none;
+            border: 1px solid gainsboro;
+            color: black;
+        }
+
+        .pagination a:visited {
+            color: black;
+        }
+
+        .pagination a.active {
+            background-color: palevioletred;
+            border: 1px solid palevioletred;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>사용자 테이블 - 페이징</h1>
+    <table>
+        <tr>
+            {% for header in headers %}
+            <th>{{ header }}</th>
+            {% endfor %}
+        </tr>
+        {% for row in data %}
+        <tr>
+            {% for header in headers %}
+            <td><a href="/user/{{ item.id }}"> {{ row[header] }}</a></td>
+            {% endfor %}
+        </tr>
+        {% endfor %}
+    </table>
+    <div class="pagination">
+        {% if page > 1 %}
+        <a href="?page={{ page - 1 }}">이전 페이지</a>
+        {% endif %}
+        {% for num in range(1, totalPage + 1) %}
+        <a href="/?page={{ num }}" {% if num==page %} class="active" {% endif %}>{{ num }}</a>
+        {% endfor %}
+        {% if page < totalPage %} <a href="?page={{ page + 1 }}">다음 페이지</a>
+        {% endif %}
+    </div>
+    <!-- <script>
+    var data = {{ data | dump | safe }};
+    console.log(data);
+</script> -->
+</body>
+
+</html>
