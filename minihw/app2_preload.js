@@ -84,7 +84,7 @@ async function startServer() {
         console.log(`전체 데이터 개수는 ${data.length}이며,`,
                     `페이지당 개수는 ${itemsPerPage}이고`,
                     `전체 페이지 수는 ${totalPage}입니다.`);
-        
+        // console.log(data);
 
         // 미션1. 읽은 데이터에서 무조건, 앞에 10개만 준다.
         const dataList = data.slice(startIndex, endIndex);
@@ -92,13 +92,15 @@ async function startServer() {
             headers: fieldnames, 
             data: dataList,
             totalPage: totalPage, 
-            page: parseInt(page)
+            page: parseInt(page),
+            index_id: 'Id',
         });
     });
 
     app.get('/user/:id', (req, res) => {
         const userId = req.params.id;
         const user = data.find(item => item.id === userId);
+
         if (!user) {
             // 사용자를 찾지 못한 경우 처리
             res.status(404).send('사용자를 찾을 수 없습니다.');
@@ -106,9 +108,11 @@ async function startServer() {
         }
     
         // 사용자 데이터로 사용자 상세 페이지 렌더링
-        res.render('userdetail', { user });
+        res.render('userdetail2', { 
+            user : user,
+            headers: fieldnames, 
+        });
     });
-
 
     app.listen(port, () => {
         console.log(`서버에 ${port} 가 열려있습니다.`);
