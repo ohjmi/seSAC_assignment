@@ -71,35 +71,42 @@ async function startServer() {
 
         console.log(`요청 GET 파라미터: ${req.query.page}`);
 
+        // 검색어 받아오기
+        const searchName = req.query.search || '';
+
         // 미션3. 이제 a태그의 하이퍼링크를 톨해서 원하는 페이지로 이동한다.
         page = req.query.page || 1;
         startIndex = (page - 1) * itemsPerPage;
         endIndex = startIndex + itemsPerPage;
 
-        
+        // 검색어를 포함하는 사용자만 필터링
+        const filterData = data.filter(user => user.Name.toLowerCase().includes(searchName.toLowerCase()));
 
         // 미션2. 전체 페이지 수를 계산한다.
         // 그 페이지 숫자를 html로 전달해서 화면 아래에 추가한다.
-        const totalPage = Math.ceil(data.length / itemsPerPage);
+        const totalPage = Math.ceil(filterData.length / itemsPerPage);
         console.log(`전체 데이터 개수는 ${data.length}이며,`,
                     `페이지당 개수는 ${itemsPerPage}이고`,
                     `전체 페이지 수는 ${totalPage}입니다.`);
         // console.log(data);
 
         // 미션1. 읽은 데이터에서 무조건, 앞에 10개만 준다.
-        const dataList = data.slice(startIndex, endIndex);
+        // const dataList = data.slice(startIndex, endIndex);
+        const dataList = filterData.slice(startIndex, endIndex);
+
         res.render('index2', { 
             headers: fieldnames, 
             data: dataList,
             totalPage: totalPage, 
             page: parseInt(page),
             index_id: 'Id',
+            searchName: searchName,
         });
     });
 
     app.get('/user/:id', (req, res) => {
         const userId = req.params.id;
-        const user = data.find(item => item.id === userId);
+        const user = data.find(item => item.Id === userId);;
 
         if (!user) {
             // 사용자를 찾지 못한 경우 처리
@@ -108,11 +115,13 @@ async function startServer() {
         }
     
         // 사용자 데이터로 사용자 상세 페이지 렌더링
-        res.render('userdetail2', { 
+        res.render('userdetail', { 
             user : user,
-            headers: fieldnames, 
+            headers: fieldnames,
         });
     });
+
+
 
     app.listen(port, () => {
         console.log(`서버에 ${port} 가 열려있습니다.`);

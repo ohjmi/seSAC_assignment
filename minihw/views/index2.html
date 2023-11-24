@@ -4,6 +4,10 @@
 <head>
     <title>user table</title>
     <style>
+        .search {
+            margin-bottom: 20px;
+        }
+
         table {
             width: 100%;
             border-collapse: collapse;
@@ -48,36 +52,50 @@
         .pagination a.active {
             background-color: palevioletred;
             border: 1px solid palevioletred;
+            color: white;
         }
     </style>
 </head>
 
 <body>
     <h1>사용자 테이블 - 페이징</h1>
+        <form  action="/" method="get">
+            <input type="text" id="search" name="search" value="{{ searchName }}" placeholder="이름을 입력하세요">
+            <button type="submit">검색</button>
+        </form>
     <table>
         <tr>
             {% for header in headers %}
+            {% if header != 'Id' %}
             <th>{{ header }}</th>
+            {% endif %}
             {% endfor %}
         </tr>
         {% for row in data %}
         <tr>
             {% for header in headers %}
-            <td><a href="/user/{{ item.id }}"> {{ row[header] }}</a></td>
+            {% if header != 'Id' %}
+            <!-- <td>{{ row[header] }}</td> -->
+            <td>
+                <a href="/user/{{ row[index_id] }}"  style="background-color: {% if searchName and row[header].toLowerCase().includes(searchName.toLowerCase()) %}red{% endif %};">{{ row[header] }}</a>
+            </td>
+            {% endif %}
             {% endfor %}
         </tr>
         {% endfor %}
     </table>
     <div class="pagination">
         {% if page > 1 %}
-        <a href="?page={{ page - 1 }}">이전 페이지</a>
+        <a href="?page={{ page - 1 }}{% if searchName %}&search={{ searchName }}{% endif %}">이전 페이지</a>
         {% endif %}
         {% for num in range(1, totalPage + 1) %}
-        <a href="/?page={{ num }}" {% if num==page %} class="active" {% endif %}>{{ num }}</a>
+        <a href="/?page={{ num }}{% if searchName %}&search={{ searchName }}{% endif %}" {% if num==page %} class="active" {% endif %}>{{ num }}</a>
         {% endfor %}
-        {% if page < totalPage %} <a href="?page={{ page + 1 }}">다음 페이지</a>
+        {% if page < totalPage %}
+        <a href="?page={{ page + 1 }}{% if searchName %}&search={{ searchName }}{% endif %}">다음 페이지</a>
         {% endif %}
     </div>
+    
     <!-- <script>
     var data = {{ data | dump | safe }};
     console.log(data);
