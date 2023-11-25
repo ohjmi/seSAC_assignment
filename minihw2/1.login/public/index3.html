@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <title>로그인 페이지</title>
+</head>
+<body>
+    <h1>Login333</h1>
+    <div id="loginFormContainer">
+        <form id="loginForm">
+            <label for="username">Username</label>
+            <input type="text" id="username" name="username"><br>
+            <label for="password">Password</label>
+            <input type="password" id="password" name="password"><br>
+            <input type="button" onclick="login()" value="login">
+        </form>
+    </div>
+
+    <!-- 로그인한 사용자의 정보를 보여줄 공간 -->
+    <div id="profile" style="display: none">
+        <h2>welcome, <span id="usernameSpan">님!</span></h2>
+        <button onclick="logout()">Logout</button>
+    </div>
+    <script src="static/js/login3.js"></script>
+</body>
+</html>
