@@ -190,15 +190,27 @@ app.get('/logout', (req, res) => {
     })
 })
 
+// app.get('/check-login', (req, res) => {
+//     const user = req.session.user;
+
+//     if (user) {
+//         res.json({ username: user.username});
+//     } else {
+//         res.status(401).json({ message: '인증되지 않은 사용자'});
+//     }
+// })
+
 app.get('/check-login', (req, res) => {
     const user = req.session.user;
 
     if (user) {
-        res.json({ username: user.username});
+        res.json({ username: user.username });
     } else {
-        res.status(401).json({ message: '인증되지 않은 사용자'});
+        // 로그인되지 않았을 때도 200 상태 코드 반환
+        res.status(200).json({ message: '인증되지 않은 사용자' });
     }
-})
+});
+
 
 
 app.post('/add-to-cart/:productId', (req, res) => {
