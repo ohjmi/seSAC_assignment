@@ -1,4 +1,19 @@
 document.addEventListener('DOMContentLoaded', () => {
+    fetch('/check-login')   // 백엔드 구현: 사용자 세션 있으면 username 반납
+        .then(response => response.json())
+        .then(data => {
+            if (data.username) {
+                console.log('사용자 이름:', data.username);
+                document.getElementById('usernameSpan').innerText = data.username;
+            } else {
+                console.log('로그인된 사용자 없음');
+                showLoginForm();
+            }
+        })
+        .catch(error => {
+            console.error('로그인 상태 확인 오류:', error);
+            showLoginForm();
+        })
     fetch('/products')
         .then((response) => response.json())
         .then((products) => displayProduct(products))
@@ -34,8 +49,7 @@ function addToCart(productId) {
             fetch('/cart')
                 .then((response) => response.json())
                 .then((cart) => {
-                    window.location.href = '/login.html'
-                    // window.location.href = '/cart.html'
+                    window.location.href = '/cart.html'
                 })
         })
 }

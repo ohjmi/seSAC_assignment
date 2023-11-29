@@ -20,13 +20,7 @@ function login() {
         .then(data => {
             console.log(data.message);
             alert(data.message);
-            // if (data.message === '로그인 성공') {
-            //     alert('로그인 성공')
-            // } else {
-            //     alert('로그인 실패')
-            // }
             checkLoginStatus();
-            window.location.href = '/product.html'
         }).catch(error => {
             console.log('로그인 실패: ', error);
             alert('로그인 실패')
@@ -42,16 +36,17 @@ function logout() {
         })
 }
 
+
 function checkLoginStatus() {
     fetch('/check-login')   // 백엔드 구현: 사용자 세션 있으면 username 반납
         .then(response => response.json())
         .then(data => {
             if (data.username) {
-                showProfile(data.username);
                 // console.log('사용자 이름:', data.username);
+                showProfile(data.username);
             } else {
-                showLoginForm();
                 // console.log('로그인된 사용자 없음');
+                showLoginForm();
             }
         })
         .catch(error => {
@@ -60,13 +55,35 @@ function checkLoginStatus() {
         })
 }
 
+document.addEventListener('DOMContentLoaded', () => {
+    checkLoginStatus();
+});
+
+// function showProfile(username) {
+//     document.getElementById('loginFormContainer').style.display = 'none';
+//     document.querySelectorAll('.profile').style.display = 'block';
+//     document.getElementById('usernameSpan').innerText = username;
+// }
+
+// function showLoginForm() {
+//     document.getElementById('loginFormContainer').style.display = 'block';
+//     document.querySelectorAll('.profile').style.display = 'none';
+// }
 function showProfile(username) {
-    document.getElementById('loginFormContainer').style.display = 'none';
-    document.getElementById('profile').style.display = 'block';
-    document.getElementById('usernameSpan').innerText = username;
+    const profileElements = document.querySelectorAll('.profile');
+
+    profileElements.forEach(profileElement => {
+        profileElement.style.display = 'block';
+        document.getElementById('usernameSpan').innerText = username;
+        document.getElementById('loginFormContainer').style.display = 'none';
+    });
 }
 
 function showLoginForm() {
-    document.getElementById('loginFormContainer').style.display = 'block';
-    document.getElementById('profile').style.display = 'none';
+    const profileElements = document.querySelectorAll('.profile');
+
+    profileElements.forEach(profileElement => {
+        profileElement.style.display = 'none';
+        document.getElementById('loginFormContainer').style.display = 'block';
+    });
 }
