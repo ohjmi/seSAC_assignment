@@ -73,8 +73,12 @@ function showProfile(username) {
     const profileElements = document.querySelectorAll('.profile');
 
     profileElements.forEach(profileElement => {
-        profileElement.style.display = 'block';
-        document.getElementById('usernameSpan').innerText = username;
+        profileElement.style.display = 'flex';
+        // document.getElementsByClassName('usernameSpan').innerText = username;
+        const usernameSpan = document.getElementsByClassName('usernameSpan');
+        for (const span of usernameSpan) {
+            span.innerText = username;
+        }
         document.getElementById('loginFormContainer').style.display = 'none';
     });
 }
