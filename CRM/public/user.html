@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>user</title>
+</head>
+<body>
+    <form  action="/user" method="get">
+        <input type="text" id="search" name="search"  placeholder="이름을 입력하세요">
+        <select>
+            <option>여자</option>
+            <option>남자</option>
+        </select>
+        <button type="submit">검색</button>
+    </form>
+    <table id="userTable" border="1">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Name</th>
+                <th>Gender</th>
+                <th>Age</th>
+                <th>Birthdate</th>
+                <th>Address</th>
+            </tr>
+        </thead>
+        <tbody>
+
+        </tbody>
+      </table>
+      <!-- <div id="pagination">
+        <button id="prevButton">Previous</button>
+        <button id="currentPage"></button>
+        <button id="nextButton">Next</button>
+      </div> -->
+      <div id="pagination">
+        <button id="prevButton">Previous</button>
+        <span id="pageNumbersContainer"></span>
+        <button id="nextButton">Next</button>
+        <div id="currentPage">Page 1</div>
+      </div>
+<script src="/static/user.js"></script>
+</body>
+</html>
