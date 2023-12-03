@@ -1,65 +1,25 @@
-// document.addEventListener('DOMContentLoaded', () => {
-//     fetch('/api/user')
-//         .then((response) => response.json())
-//         .then((userData) => displayUser(userData))
-// });
-
-// function displayUser(userData) {
-
-//     const userTableBody = document.getElementById('userTable');
-//     userData.forEach(user => {
-//         const row = document.createElement('tr');
-//         row.innerHTML = `
-//         <td>${user.Id}</td>
-//         <td>${user.Name}</td>
-//         <td>${user.Gender}</td>
-//         <td>${user.Age}</td>
-//         <td>${user.Birthdate}</td>
-//         <td>${user.Address}</td>
-//       `;
-//         userTableBody.appendChild(row);
-//     });
-// }
-
-
-
 document.addEventListener('DOMContentLoaded', () => {
-    fetch('/api/user')
-      .then(response => response.json())
-      .then(data => {
-        // data.users가 배열이므로 forEach를 사용할 수 있습니다.
-        console.log(data.users);
-        displayUser(data.users);
-        updatePaginationInfo(data.currentPage);
-      })
-      .catch(error => {
-        console.error('Error fetching user data:', error);
-      });
-  });
-
-
-  const userTableBody = document.getElementById('userTable');
-  const prevButton = document.getElementById('prevButton');
-  const nextButton = document.getElementById('nextButton');
-  const currentPageElement = document.getElementById('currentPage');
   const pageNumbersContainer = document.getElementById('pageNumbersContainer');
-
   let currentPage = 1;
 
   // 페이지 갱신 함수
-  function updatePage() {
-    fetch(`/api/user?page=${currentPage}`)
+  function updatePage(page = currentPage, searchName = '') {
+    fetch(`/api/user?page=${page}&search=${searchName}`)
       .then(response => response.json())
       .then(data => {
         displayUser(data.users);
         updatePaginationInfo(data.currentPage, data.totalPage);
+
+      })
+      .catch(error => {
+        console.error('Error fetching user data:', error);
       });
   }
 
   // 페이지 정보 갱신 함수
   function updatePaginationInfo(currentPage, totalPage) {
-    currentPageElement.textContent = `Page ${currentPage}`;
     updatePageNumbers(totalPage);
+    updateButtonsVisibility(currentPage, totalPage);
   }
 
   // 페이지 번호 갱신 함수
@@ -75,18 +35,18 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // 이전 페이지로 이동 함수
-  function goToPrevPage() {
+  window.prevButton = function () {
     if (currentPage > 1) {
       currentPage--;
       updatePage();
     }
-  }
+  };
 
   // 다음 페이지로 이동 함수
-  function goToNextPage() {
+  window.nextButton = function () {
     currentPage++;
     updatePage();
-  }
+  };
 
   // 특정 페이지로 이동 함수
   function goToPage(page) {
@@ -94,19 +54,24 @@ document.addEventListener('DOMContentLoaded', () => {
     updatePage();
   }
 
-  // 페이징 버튼 이벤트 핸들러 등록
-  prevButton.addEventListener('click', goToPrevPage);
-  nextButton.addEventListener('click', goToNextPage);
+  // 검색 버튼 클릭 시 이벤트 처리
+  window.searchButton= function () {
+    const searchValue = document.getElementById('searchInput').value.trim();
+    updatePage(1, searchValue);
+}
+
 
   // 초기 페이지 로딩
   updatePage();
 
-  
-function displayUser(users) {
+  // 필요에 따라서 displayUser 함수 구현
+  function displayUser(users) {
+    const userTableBody = document.getElementById('userTable');
+    userTableBody.innerHTML = '';
 
     users.forEach(user => {
-        const row = document.createElement('tr');
-        row.innerHTML = `
+      const row = document.createElement('tr');
+      row.innerHTML = `
         <td>${user.Id}</td>
         <td>${user.Name}</td>
         <td>${user.Gender}</td>
@@ -114,7 +79,15 @@ function displayUser(users) {
         <td>${user.Birthdate}</td>
         <td>${user.Address}</td>
       `;
-        userTableBody.appendChild(row);
+      userTableBody.appendChild(row);
     });
-}
+  }
 
+  // 이전 페이지, 다음 페이지 버튼의 표시 여부 갱신 함수
+  function updateButtonsVisibility(currentPage, totalPage) {
+    const prevButton = document.getElementById('prevButton');
+    const nextButton = document.getElementById('nextButton');
+    prevButton.style.display = currentPage === 1 ? 'none' : 'block';
+    nextButton.style.display = currentPage === totalPage ? 'none' : 'block';
+  }
+});

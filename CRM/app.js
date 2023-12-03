@@ -27,45 +27,65 @@ app.get('/user', (req, res) => {
 
 
 app.get('/api/user', (req, res) => {
-  const query = 'SELECT * FROM users'; 
+  const itemsPerPage = 50;
+  let startIndex;
+  let endIndex;
 
-  // 모든 행에 대한 데이터를 한 번에 응답으로 보냄
+  console.log(`요청 GET 파라미터: ${req.query.page}`);
+
+  // 검색어 받아오기
+  const searchName = req.query.search || '';
+
+  // 미션3. 이제 a태그의 하이퍼링크를 통해서 원하는 페이지로 이동한다.
+  page = req.query.page || 1;
+  startIndex = (page - 1) * itemsPerPage;
+  endIndex = startIndex + itemsPerPage;
+
+  const query = 'SELECT * FROM users';
   db.all(query, (err, rows) => {
     if (err) {
       console.error(err.message);
       res.status(500).json({ error: 'Internal Server Error' });
     } else {
-      // 검색어
-      const searchName = req.query.search || '';
-      
-      // 페이징 처리
-      const page = parseInt(req.query.page) || 1;
-      const itemsPerPage = 50;
-      const startIndex = (page - 1) * itemsPerPage;
-      const endIndex = startIndex + itemsPerPage;
-
-      // 검색된 데이터를 페이징에 맞게 자르기
+      // 검색어를 포함하는 사용자만 필터링
       const filterData = rows.filter(user => user.Name.toLowerCase().includes(searchName.toLowerCase()));
-      const dataList = filterData.slice(startIndex, endIndex);
 
-      // 전체 페이지 수 계산
+      // 미션2. 전체 페이지 수를 계산한다.
       const totalPage = Math.ceil(filterData.length / itemsPerPage);
-
       console.log(`전체 데이터 개수는 ${rows.length}이며,`,
-                  `검색된 데이터 개수는 ${filterData.length}이며,`,
                   `페이지당 개수는 ${itemsPerPage}이고`,
-                  `현재 페이지는 ${page}이며,`,
                   `전체 페이지 수는 ${totalPage}입니다.`);
+
+      // 미션1. 읽은 데이터에서 무조건, 앞에 10개만 준다.
+      // const dataList = data.slice(startIndex, endIndex);
+      const dataList = filterData.slice(startIndex, endIndex);
 
       res.json({
         users: dataList,
         totalPage: totalPage,
-        currentPage: page,
+        currentPage: parseInt(page),
         index_id: 'Id',
         searchName: searchName,
       });
     }
   });
+});
+
+app.get('/user/:id', (req, res) => {
+  const userId = req.params.id;
+  const user = data.find(item => item.Id === userId);;
+
+  if (!user) {
+      // 사용자를 찾지 못한 경우 처리
+      res.status(404).send('사용자를 찾을 수 없습니다.');
+      return;
+  }
+
+  // 사용자 데이터로 사용자 상세 페이지 렌더링
+  res.json({
+    user: user,
+  });
+
 });
 
 

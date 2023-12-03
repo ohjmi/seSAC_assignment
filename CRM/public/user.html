@@ -4,42 +4,55 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>user</title>
+    <link rel="stylesheet" href="./static/user.css">
 </head>
 <body>
-    <form  action="/user" method="get">
-        <input type="text" id="search" name="search"  placeholder="이름을 입력하세요">
-        <select>
-            <option>여자</option>
-            <option>남자</option>
-        </select>
-        <button type="submit">검색</button>
-    </form>
-    <table id="userTable" border="1">
-        <thead>
-            <tr>
-                <th>Id</th>
-                <th>Name</th>
-                <th>Gender</th>
-                <th>Age</th>
-                <th>Birthdate</th>
-                <th>Address</th>
-            </tr>
-        </thead>
-        <tbody>
-
-        </tbody>
-      </table>
-      <!-- <div id="pagination">
-        <button id="prevButton">Previous</button>
-        <button id="currentPage"></button>
-        <button id="nextButton">Next</button>
-      </div> -->
-      <div id="pagination">
-        <button id="prevButton">Previous</button>
-        <span id="pageNumbersContainer"></span>
-        <button id="nextButton">Next</button>
-        <div id="currentPage">Page 1</div>
-      </div>
+    <div class="wrap">
+        <nav>
+            <ul>
+                <li><a href="./user.html">User</a></li>
+                <li><a href="./store.html">Store</a></li>
+                <li><a href="./item.html">Item</a></li>
+                <li><a href="./order.html">Order</a></li>
+                <li><a href="./orderitem.html">OrderItem</a></li>
+            </ul>
+        </nav>
+        <form action="/user" method="get">
+            <input type="text" id="searchInput" name="search"  placeholder="이름을 입력하세요">
+            <select>
+                <option>여자</option>
+                <option>남자</option>
+            </select>
+            <button type="submit" id="searchButton" onclick="searchButton()">검색</button>
+        </form>
+        <div class="table_wrap">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Id</th>
+                        <th>Name</th>
+                        <th>Gender</th>
+                        <th>Age</th>
+                        <th>Birthdate</th>
+                        <th>Address</th>
+                    </tr>
+                </thead>
+                <tbody id="userTable">
+        
+                </tbody>
+              </table>
+        </div>
+          <!-- <div id="pagination">
+            <button id="prevButton">Previous</button>
+            <button id="currentPage"></button>
+            <button id="nextButton">Next</button>
+          </div> -->
+          <div id="pagination">
+            <button id="prevButton" onclick="prevButton()">Previous</button>
+            <span id="pageNumbersContainer"></span>
+            <button id="nextButton" onclick="nextButton()">Next</button>
+          </div>
+    </div>
 <script src="/static/user.js"></script>
 </body>
 </html>
