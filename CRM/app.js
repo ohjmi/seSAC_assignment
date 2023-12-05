@@ -18,15 +18,26 @@ app.use(express.urlencoded({ extended: true }));
 // 라우터 추가
 app.use(express.static(path.join(__dirname, 'public')));
 
-
-
 app.get('/user', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'user.html'));
 });
-
+app.get('/store', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'store.html'));
+});
+app.get('/order', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'order.html'));
+});
+app.get('/item', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'item.html'));
+});
+app.get('/orderitem', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'orderitem.html'));
+});
 
 
 app.get('/api/user', (req, res) => {
+
+  console.log(req)
   const itemsPerPage = 50;
   let startIndex;
   let endIndex;
@@ -35,8 +46,9 @@ app.get('/api/user', (req, res) => {
 
   // 검색어 받아오기
   const searchName = req.query.search || '';
+  console.log('검색어:', searchName)
 
-  // 미션3. 이제 a태그의 하이퍼링크를 통해서 원하는 페이지로 이동한다.
+  // a태그의 하이퍼링크를 통해서 원하는 페이지로 이동한다.
   page = req.query.page || 1;
   startIndex = (page - 1) * itemsPerPage;
   endIndex = startIndex + itemsPerPage;
@@ -50,21 +62,19 @@ app.get('/api/user', (req, res) => {
       // 검색어를 포함하는 사용자만 필터링
       const filterData = rows.filter(user => user.Name.toLowerCase().includes(searchName.toLowerCase()));
 
-      // 미션2. 전체 페이지 수를 계산한다.
+      // 전체 페이지 수를 계산한다.
       const totalPage = Math.ceil(filterData.length / itemsPerPage);
       console.log(`전체 데이터 개수는 ${rows.length}이며,`,
                   `페이지당 개수는 ${itemsPerPage}이고`,
                   `전체 페이지 수는 ${totalPage}입니다.`);
 
-      // 미션1. 읽은 데이터에서 무조건, 앞에 10개만 준다.
-      // const dataList = data.slice(startIndex, endIndex);
+      // 미션1. 읽은 데이터에서 무조건, 앞에 50개만 준다.
       const dataList = filterData.slice(startIndex, endIndex);
 
       res.json({
         users: dataList,
         totalPage: totalPage,
         currentPage: parseInt(page),
-        index_id: 'Id',
         searchName: searchName,
       });
     }
@@ -73,7 +83,7 @@ app.get('/api/user', (req, res) => {
 
 app.get('/user/:id', (req, res) => {
   const userId = req.params.id;
-  const user = data.find(item => item.Id === userId);;
+  const user = data.find(item => item.Id === userId);
 
   if (!user) {
       // 사용자를 찾지 못한 경우 처리
@@ -86,6 +96,198 @@ app.get('/user/:id', (req, res) => {
     user: user,
   });
 
+});
+
+app.get('/api/store', (req, res) => {
+
+  console.log(req)
+  const itemsPerPage = 50;
+  let startIndex;
+  let endIndex;
+
+  console.log(`요청 GET 파라미터: ${req.query.page}`);
+
+  // 검색어 받아오기
+  const searchName = req.query.search || '';
+  console.log('검색어:', searchName)
+
+  // a태그의 하이퍼링크를 통해서 원하는 페이지로 이동한다.
+  page = req.query.page || 1;
+  startIndex = (page - 1) * itemsPerPage;
+  endIndex = startIndex + itemsPerPage;
+
+  const query = 'SELECT * FROM stores';
+  console.log(query)
+  db.all(query, (err, rows) => {
+    if (err) {
+      console.error(err.message);
+      res.status(500).json({ error: 'Internal Server Error' });
+    } else {
+      // 검색어를 포함하는 사용자만 필터링
+      const filterData = rows.filter(user => user.Name.toLowerCase().includes(searchName.toLowerCase()));
+
+      // 전체 페이지 수를 계산한다.
+      const totalPage = Math.ceil(filterData.length / itemsPerPage);
+      console.log(`전체 데이터 개수는 ${rows.length}이며,`,
+                  `페이지당 개수는 ${itemsPerPage}이고`,
+                  `전체 페이지 수는 ${totalPage}입니다.`);
+
+      // 미션1. 읽은 데이터에서 무조건, 앞에 50개만 준다.
+      const dataList = filterData.slice(startIndex, endIndex);
+
+      res.json({
+        users: dataList,
+        totalPage: totalPage,
+        currentPage: parseInt(page),
+        searchName: searchName,
+      });
+    }
+  });
+});
+
+app.get('/api/order', (req, res) => {
+
+  console.log(req)
+  const itemsPerPage = 500;
+  let startIndex;
+  let endIndex;
+
+  console.log(`요청 GET 파라미터: ${req.query.page}`);
+
+  // 검색어 받아오기
+  const searchName = req.query.search || '';
+  console.log('검색어:', searchName)
+
+  // a태그의 하이퍼링크를 통해서 원하는 페이지로 이동한다.
+  page = req.query.page || 1;
+  startIndex = (page - 1) * itemsPerPage;
+  endIndex = startIndex + itemsPerPage;
+
+  const query = 'SELECT * FROM orders';
+  console.log(query)
+  db.all(query, (err, rows) => {
+    if (err) {
+      console.error(err.message);
+      res.status(500).json({ error: 'Internal Server Error' });
+    } else {
+      // 검색어를 포함하는 사용자만 필터링
+      const filterData = rows.filter(user => user.Id.toLowerCase().includes(searchName.toLowerCase()));
+
+      // 전체 페이지 수를 계산한다.
+      const totalPage = Math.ceil(filterData.length / itemsPerPage);
+      // const totalPage = Math.ceil(rows.length / itemsPerPage);
+      console.log(`전체 데이터 개수는 ${rows.length}이며,`,
+                  `페이지당 개수는 ${itemsPerPage}이고`,
+                  `전체 페이지 수는 ${totalPage}입니다.`);
+
+      // 미션1. 읽은 데이터에서 무조건, 앞에 50개만 준다.
+      const dataList = filterData.slice(startIndex, endIndex);
+
+      res.json({
+        users: dataList,
+        totalPage: totalPage,
+        currentPage: parseInt(page),
+        searchName: searchName,
+      });
+    }
+  });
+});
+
+
+app.get('/api/item', (req, res) => {
+
+  console.log(req)
+  const itemsPerPage = 500;
+  let startIndex;
+  let endIndex;
+
+  console.log(`요청 GET 파라미터: ${req.query.page}`);
+
+  // 검색어 받아오기
+  const searchName = req.query.search || '';
+  console.log('검색어:', searchName)
+
+  // a태그의 하이퍼링크를 통해서 원하는 페이지로 이동한다.
+  page = req.query.page || 1;
+  startIndex = (page - 1) * itemsPerPage;
+  endIndex = startIndex + itemsPerPage;
+
+  const query = 'SELECT * FROM items';
+  console.log(query)
+  db.all(query, (err, rows) => {
+    if (err) {
+      console.error(err.message);
+      res.status(500).json({ error: 'Internal Server Error' });
+    } else {
+      // 검색어를 포함하는 사용자만 필터링
+      const filterData = rows.filter(user => user.Id.toLowerCase().includes(searchName.toLowerCase()));
+
+      // 전체 페이지 수를 계산한다.
+      const totalPage = Math.ceil(filterData.length / itemsPerPage);
+      console.log(`전체 데이터 개수는 ${rows.length}이며,`,
+                  `페이지당 개수는 ${itemsPerPage}이고`,
+                  `전체 페이지 수는 ${totalPage}입니다.`);
+
+      // 미션1. 읽은 데이터에서 무조건, 앞에 50개만 준다.
+      const dataList = filterData.slice(startIndex, endIndex);
+
+      res.json({
+        users: dataList,
+        totalPage: totalPage,
+        currentPage: parseInt(page),
+        searchName: searchName,
+      });
+    }
+  });
+});
+
+
+
+app.get('/api/orderitem', (req, res) => {
+
+  console.log(req)
+  const itemsPerPage = 2500;
+  let startIndex;
+  let endIndex;
+
+  console.log(`요청 GET 파라미터: ${req.query.page}`);
+
+  // 검색어 받아오기
+  const searchName = req.query.search || '';
+  console.log('검색어:', searchName)
+
+  // a태그의 하이퍼링크를 통해서 원하는 페이지로 이동한다.
+  page = req.query.page || 1;
+  startIndex = (page - 1) * itemsPerPage;
+  endIndex = startIndex + itemsPerPage;
+
+  const query = 'SELECT * FROM orderitems';
+  console.log(query)
+  db.all(query, (err, rows) => {
+    if (err) {
+      console.error(err.message);
+      res.status(500).json({ error: 'Internal Server Error' });
+    } else {
+      // 검색어를 포함하는 사용자만 필터링
+      const filterData = rows.filter(user => user.Id.toLowerCase().includes(searchName.toLowerCase()));
+
+      // 전체 페이지 수를 계산한다.
+      const totalPage = Math.ceil(filterData.length / itemsPerPage);
+      console.log(`전체 데이터 개수는 ${rows.length}이며,`,
+                  `페이지당 개수는 ${itemsPerPage}이고`,
+                  `전체 페이지 수는 ${totalPage}입니다.`);
+
+      // 미션1. 읽은 데이터에서 무조건, 앞에 50개만 준다.
+      const dataList = filterData.slice(startIndex, endIndex);
+
+      res.json({
+        users: dataList,
+        totalPage: totalPage,
+        currentPage: parseInt(page),
+        searchName: searchName,
+      });
+    }
+  });
 });
 
 

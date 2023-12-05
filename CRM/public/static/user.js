@@ -1,93 +1,176 @@
+let currentPage = 1;
+let totalPage = 1; // 초기값 설정
+
 document.addEventListener('DOMContentLoaded', () => {
+  fetchUserData();
+  });
+  
+  function fetchUserData() {
+    const searchValue = document.getElementById('searchInput').value;
+    fetch(`/api/user?search=${searchValue}&page=${currentPage}`)
+    .then(response => response.json())
+    .then(data => {
+      currentPage = data.currentPage;
+      totalPage = data.totalPage;
+      displayUser(data.users);
+      pagination(currentPage, totalPage);
+    })
+    .catch(error => {
+      console.error('Error fetching user data:', error);
+    });
+  }
+  
+function pagination(currentPage, totalPage) {
   const pageNumbersContainer = document.getElementById('pageNumbersContainer');
-  let currentPage = 1;
+  pageNumbersContainer.innerHTML = '';
 
-  // 페이지 갱신 함수
-  function updatePage(page = currentPage, searchName = '') {
-    fetch(`/api/user?page=${page}&search=${searchName}`)
-      .then(response => response.json())
-      .then(data => {
-        displayUser(data.users);
-        updatePaginationInfo(data.currentPage, data.totalPage);
+  for (let i = 1; i <= totalPage; i++) {
+    const pageNumberElement = document.createElement('a');
+    pageNumberElement.textContent = i;
+    pageNumberElement.className = 'page_number';
 
-      })
-      .catch(error => {
-        console.error('Error fetching user data:', error);
-      });
-  }
+    // 현재 페이지일 때 클래스 추가
+    if (i === currentPage) {
+      console.log(currentPage)
+      pageNumberElement.style.backgroundColor = 'palevioletred';
+      pageNumberElement.style.border = '1px solid palevioletred';
+      pageNumberElement.style.color = 'white';
 
-  // 페이지 정보 갱신 함수
-  function updatePaginationInfo(currentPage, totalPage) {
-    updatePageNumbers(totalPage);
-    updateButtonsVisibility(currentPage, totalPage);
-  }
-
-  // 페이지 번호 갱신 함수
-  function updatePageNumbers(totalPage) {
-    pageNumbersContainer.innerHTML = '';
-    for (let i = 1; i <= totalPage; i++) {
-      const pageNumberElement = document.createElement('span');
-      pageNumberElement.textContent = i;
-      pageNumberElement.className = 'page-number';
-      pageNumberElement.addEventListener('click', () => goToPage(i));
-      pageNumbersContainer.appendChild(pageNumberElement);
     }
+
+    pageNumberElement.addEventListener('click', () => goToPage(i));
+    pageNumbersContainer.appendChild(pageNumberElement);
+    
   }
 
-  // 이전 페이지로 이동 함수
-  window.prevButton = function () {
-    if (currentPage > 1) {
-      currentPage--;
-      updatePage();
-    }
-  };
+  const prevButtonElement = document.getElementById('prevButton');
+  prevButtonElement.style.display = currentPage === 1 || '' ? 'none' : 'block';
 
-  // 다음 페이지로 이동 함수
-  window.nextButton = function () {
+  const nextButtonElement = document.getElementById('nextButton');
+  if (currentPage === totalPage || totalPage === 0 ) {
+    nextButtonElement.style.display = 'none';
+  } else {
+    nextButtonElement.style.display = 'block';
+  }
+
+}
+
+function prevButton() {
+  if (currentPage > 1) {
+    currentPage--;
+    fetchUserData();
+  }
+}
+
+function nextButton() {
+  if (currentPage < totalPage) {
     currentPage++;
-    updatePage();
-  };
-
-  // 특정 페이지로 이동 함수
-  function goToPage(page) {
-    currentPage = page;
-    updatePage();
+    fetchUserData();
   }
+}
 
-  // 검색 버튼 클릭 시 이벤트 처리
-  window.searchButton= function () {
-    const searchValue = document.getElementById('searchInput').value.trim();
-    updatePage(1, searchValue);
+function goToPage(page) {
+  currentPage = page;
+  fetchUserData();
 }
 
 
-  // 초기 페이지 로딩
-  updatePage();
 
-  // 필요에 따라서 displayUser 함수 구현
-  function displayUser(users) {
-    const userTableBody = document.getElementById('userTable');
-    userTableBody.innerHTML = '';
+function displayUser(users) {
+  const userTableBody = document.getElementById('userTable');
+  userTableBody.innerHTML = '';
 
-    users.forEach(user => {
-      const row = document.createElement('tr');
-      row.innerHTML = `
-        <td>${user.Id}</td>
-        <td>${user.Name}</td>
-        <td>${user.Gender}</td>
-        <td>${user.Age}</td>
-        <td>${user.Birthdate}</td>
-        <td>${user.Address}</td>
-      `;
-      userTableBody.appendChild(row);
-    });
-  }
+  users.forEach(user => {
+    const row = document.createElement('tr');
+    row.innerHTML = `
+      <td><a href='#'>${user.Id}</a></td>
+      <td>${user.Name}</td>
+      <td>${user.Gender}</td>
+      <td>${user.Age}</td>
+      <td>${user.Birthdate}</td>
+      <td>${user.Address}</td>
+    `;
+    userTableBody.appendChild(row);
+  });
+}
 
-  // 이전 페이지, 다음 페이지 버튼의 표시 여부 갱신 함수
-  function updateButtonsVisibility(currentPage, totalPage) {
-    const prevButton = document.getElementById('prevButton');
-    const nextButton = document.getElementById('nextButton');
-    prevButton.style.display = currentPage === 1 ? 'none' : 'block';
-    nextButton.style.display = currentPage === totalPage ? 'none' : 'block';
-  }
-});
+
+
+// let currentPage;
+// let totalPage;
+
+// document.addEventListener('DOMContentLoaded', () => {
+//   fetchUserData();
+// });
+
+// function fetchUserData() {
+//   let url = `/api/user?page=${currentPage}`;
+
+//   if (searchName) {
+//     url += `&search=${searchName}`;
+//   }
+
+//   fetch(url)
+//     .then((response) => response.json())
+//     .then((data) => {
+//       currentPage = data.currentPage;
+//       totalPage = data.totalPage;
+//       displayUser(data.users);
+//       pagination(currentPage, totalPage);
+//       searchName(data.searchName);
+//     })
+//     .catch((error) => {
+//       console.error('Error fetching user data:', error);
+//     });
+// }
+
+// function pagination(currentPage, totalPage) {
+//   const pageNumbersContainer = document.getElementById('pageNumbersContainer');
+//   pageNumbersContainer.innerHTML = '';
+
+//   for (let i = 1; i <= totalPage; i++) {
+//     const pageNumberElement = document.createElement('span');
+//     pageNumberElement.textContent = i;
+//     pageNumberElement.className = 'page-number';
+//     pageNumberElement.addEventListener('click', () => goToPage(i));
+//     pageNumbersContainer.appendChild(pageNumberElement);
+//   }
+// }
+
+// function prevButton() {
+//   if (currentPage > 1) {
+//     currentPage--;
+//     fetchUserData(currentPage);
+//   }
+// }
+
+// function nextButton() {
+//   if (currentPage < totalPage) {
+//     currentPage++;
+//     fetchUserData(currentPage);
+//   }
+// }
+
+// function goToPage(page) {
+//   fetchUserData(page);
+// }
+
+
+
+// function displayUser(users) {
+//   const userTableBody = document.getElementById('userTable');
+//   userTableBody.innerHTML = '';
+
+//   users.forEach((user) => {
+//     const row = document.createElement('tr');
+//     row.innerHTML = `
+//       <td>${user.Id}</td>
+//       <td>${user.Name}</td>
+//       <td>${user.Gender}</td>
+//       <td>${user.Age}</td>
+//       <td>${user.Birthdate}</td>
+//       <td>${user.Address}</td>
+//     `;
+//     userTableBody.appendChild(row);
+//   });
+// }

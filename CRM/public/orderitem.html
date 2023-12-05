@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>item</title>
+    <link rel="stylesheet" href="./static/style.css">
+</head>
+<body>
+    <div class="wrap">
+        <nav>
+            <ul>
+                <li><a href="./user.html">User</a></li>
+                <li><a href="./store.html">Store</a></li>
+                <li><a href="./item.html">Item</a></li>
+                <li><a href="./order.html">Order</a></li>
+                <li><a href="./orderitem.html">OrderItem</a></li>
+            </ul>
+        </nav>
+        <form action="/orderitem" method="get">
+            <input type="text" id="searchInput" name="search" placeholder="이름을 입력하세요">
+            <select>
+                <option>여자</option>
+                <option>남자</option>
+            </select>
+            <button type="button" id="searchButton" onclick="fetchUserData()">검색</button>
+        </form>
+        
+        <div class="table_wrap">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Id</th>
+                        <th>OrderId</th>
+                        <th>ItemId</th>
+                    </tr>
+                </thead>
+                <tbody id="userTable">
+        
+                </tbody>
+              </table>
+        </div>
+          <div id="pagination">
+            <button id="prevButton" onclick="prevButton()">Previous</button>
+            <span id="pageNumbersContainer"></span>
+            <button id="nextButton" onclick="nextButton()">Next</button>
+          </div>
+    </div>
+<script src="/static/orderitem.js"></script>
+</body>
+</html>

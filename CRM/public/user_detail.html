@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>item</title>
-    <link rel="stylesheet" href="./static/style.css">
+    <title>user</title>
+    <link rel="stylesheet" href="./static/user.css">
 </head>
 <body>
     <div class="wrap">
@@ -17,36 +17,25 @@
                 <li><a href="./orderitem.html">OrderItem</a></li>
             </ul>
         </nav>
-        <form action="/item" method="get">
-            <input type="text" id="searchInput" name="search" placeholder="이름을 입력하세요">
-            <select>
-                <option>여자</option>
-                <option>남자</option>
-            </select>
-            <button type="button" id="searchButton" onclick="fetchUserData()">검색</button>
-        </form>
-        
         <div class="table_wrap">
             <table>
                 <thead>
                     <tr>
                         <th>Id</th>
                         <th>Name</th>
-                        <th>Type</th>
-                        <th>Unitprice</th>
+                        <th>Gender</th>
+                        <th>Age</th>
+                        <th>Birthdate</th>
+                        <th>Address</th>
                     </tr>
                 </thead>
                 <tbody id="userTable">
         
                 </tbody>
-              </table>
+            </table>
         </div>
-          <div id="pagination">
-            <button id="prevButton" onclick="prevButton()">Previous</button>
-            <span id="pageNumbersContainer"></span>
-            <button id="nextButton" onclick="nextButton()">Next</button>
-          </div>
+        <p><a href="./user.html">사용자 목록으로 돌아가기</a></p>
     </div>
-<script src="/static/item.js"></script>
+<!-- <script src="/static/user2.js"></script> -->
 </body>
 </html>

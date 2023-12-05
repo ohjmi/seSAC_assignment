@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>user</title>
-    <link rel="stylesheet" href="./static/user.css">
+    <link rel="stylesheet" href="./static/style.css">
 </head>
 <body>
     <div class="wrap">
@@ -18,13 +18,14 @@
             </ul>
         </nav>
         <form action="/user" method="get">
-            <input type="text" id="searchInput" name="search"  placeholder="이름을 입력하세요">
+            <input type="text" id="searchInput" name="search" placeholder="이름을 입력하세요">
             <select>
                 <option>여자</option>
                 <option>남자</option>
             </select>
-            <button type="submit" id="searchButton" onclick="searchButton()">검색</button>
+            <button type="button" id="searchButton" onclick="fetchUserData()">검색</button>
         </form>
+        
         <div class="table_wrap">
             <table>
                 <thead>
@@ -42,11 +43,6 @@
                 </tbody>
               </table>
         </div>
-          <!-- <div id="pagination">
-            <button id="prevButton">Previous</button>
-            <button id="currentPage"></button>
-            <button id="nextButton">Next</button>
-          </div> -->
           <div id="pagination">
             <button id="prevButton" onclick="prevButton()">Previous</button>
             <span id="pageNumbersContainer"></span>
