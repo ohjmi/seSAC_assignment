@@ -21,8 +21,14 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.get('/user', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'user.html'));
 });
+app.get('/userdetail', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'user_detail.html'));
+});
 app.get('/store', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'store.html'));
+});
+app.get('/storedetail', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'store_detail.html'));
 });
 app.get('/order', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'order.html'));
@@ -37,7 +43,7 @@ app.get('/orderitem', (req, res) => {
 
 app.get('/api/user', (req, res) => {
 
-  console.log(req)
+  // console.log(req)
   const itemsPerPage = 50;
   let startIndex;
   let endIndex;
@@ -81,26 +87,33 @@ app.get('/api/user', (req, res) => {
   });
 });
 
-app.get('/user/:id', (req, res) => {
+app.get('/api/user/:id', (req, res) => {
   const userId = req.params.id;
-  const user = data.find(item => item.Id === userId);
+  const query = 'SELECT * FROM users';
 
-  if (!user) {
-      // 사용자를 찾지 못한 경우 처리
-      res.status(404).send('사용자를 찾을 수 없습니다.');
-      return;
-  }
-
-  // 사용자 데이터로 사용자 상세 페이지 렌더링
-  res.json({
-    user: user,
-  });
+  db.all(query, (err, rows) => {
+    if (err) {
+      console.error(err.message);
+      res.status(500).json({ error: 'Internal Server Error' });
+    } else {
+      const user = rows.find(item => item.Id === userId);
+      if (!user) {
+        // 사용자를 찾지 못한 경우 처리
+        res.status(404).send('사용자를 찾을 수 없습니다.');
+        return;
+      }
+      // 사용자 데이터로 사용자 상세 페이지 렌더링
+      res.json({
+        users: user,
+      });
+    }
+  })
 
 });
 
 app.get('/api/store', (req, res) => {
 
-  console.log(req)
+  // console.log(req)
   const itemsPerPage = 50;
   let startIndex;
   let endIndex;
@@ -136,7 +149,7 @@ app.get('/api/store', (req, res) => {
       const dataList = filterData.slice(startIndex, endIndex);
 
       res.json({
-        users: dataList,
+        stores: dataList,
         totalPage: totalPage,
         currentPage: parseInt(page),
         searchName: searchName,
@@ -145,9 +158,72 @@ app.get('/api/store', (req, res) => {
   });
 });
 
+
+app.get('/api/store/:id', async (req, res) => {
+  try {
+    const storeId = req.params.id;
+
+    // 첫 번째 쿼리를 Promise로 처리
+    const getStore = () => {
+      return new Promise((resolve, reject) => {
+        const query = 'SELECT * FROM stores WHERE id = ?';
+        db.all(query, [storeId], (err, rows) => {
+          if (err) {
+            console.error(err.message);
+            reject(err);
+          } else {
+            resolve(rows);
+          }
+        });
+      });
+    };
+
+    // 두 번째 쿼리를 Promise로 처리
+    const getMonth = () => {
+      return new Promise((resolve, reject) => {
+        const monthQuery = `
+          SELECT strftime ('%Y-%m', OrderAt) AS month,
+          sum(UnitPrice) AS revenue,
+          count(*) AS count
+          FROM stores s
+          JOIN items i JOIN orders o JOIN orderitems oi
+          ON s.Id = o.StoreId AND i.Id = oi.itemId AND oi.OrderId = o.Id
+          WHERE s.id = ?
+          GROUP BY month;
+        `;
+        db.all(monthQuery, [storeId], (err, rows) => {
+          if (err) {
+            console.error(err.message);
+            reject(err);
+          } else {
+            resolve(rows);
+          }
+        });
+      });
+    };
+
+    // 각각의 비동기 작업을 순차적으로 실행
+    const store = await getStore();
+    const month = await getMonth();
+
+    console.log(store, month);
+
+    res.json({
+      stores: store,
+      month: month
+    });
+  } catch (error) {
+    console.error(error.message);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
+
+
+app.get('/api/store/:매출')
+
+
 app.get('/api/order', (req, res) => {
 
-  console.log(req)
   const itemsPerPage = 500;
   let startIndex;
   let endIndex;
@@ -196,7 +272,7 @@ app.get('/api/order', (req, res) => {
 
 app.get('/api/item', (req, res) => {
 
-  console.log(req)
+  // console.log(req)
   const itemsPerPage = 500;
   let startIndex;
   let endIndex;
@@ -245,7 +321,7 @@ app.get('/api/item', (req, res) => {
 
 app.get('/api/orderitem', (req, res) => {
 
-  console.log(req)
+  // console.log(req)
   const itemsPerPage = 2500;
   let startIndex;
   let endIndex;
@@ -289,7 +365,6 @@ app.get('/api/orderitem', (req, res) => {
     }
   });
 });
-
 
 
 app.listen(port, () => {

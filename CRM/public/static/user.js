@@ -83,7 +83,7 @@ function displayUser(users) {
   users.forEach(user => {
     const row = document.createElement('tr');
     row.innerHTML = `
-      <td><a href='#'>${user.Id}</a></td>
+      <td><a href= '/userdetail?id=${user.Id}'>${user.Id}</a></td>
       <td>${user.Name}</td>
       <td>${user.Gender}</td>
       <td>${user.Age}</td>
@@ -93,84 +93,3 @@ function displayUser(users) {
     userTableBody.appendChild(row);
   });
 }
-
-
-
-// let currentPage;
-// let totalPage;
-
-// document.addEventListener('DOMContentLoaded', () => {
-//   fetchUserData();
-// });
-
-// function fetchUserData() {
-//   let url = `/api/user?page=${currentPage}`;
-
-//   if (searchName) {
-//     url += `&search=${searchName}`;
-//   }
-
-//   fetch(url)
-//     .then((response) => response.json())
-//     .then((data) => {
-//       currentPage = data.currentPage;
-//       totalPage = data.totalPage;
-//       displayUser(data.users);
-//       pagination(currentPage, totalPage);
-//       searchName(data.searchName);
-//     })
-//     .catch((error) => {
-//       console.error('Error fetching user data:', error);
-//     });
-// }
-
-// function pagination(currentPage, totalPage) {
-//   const pageNumbersContainer = document.getElementById('pageNumbersContainer');
-//   pageNumbersContainer.innerHTML = '';
-
-//   for (let i = 1; i <= totalPage; i++) {
-//     const pageNumberElement = document.createElement('span');
-//     pageNumberElement.textContent = i;
-//     pageNumberElement.className = 'page-number';
-//     pageNumberElement.addEventListener('click', () => goToPage(i));
-//     pageNumbersContainer.appendChild(pageNumberElement);
-//   }
-// }
-
-// function prevButton() {
-//   if (currentPage > 1) {
-//     currentPage--;
-//     fetchUserData(currentPage);
-//   }
-// }
-
-// function nextButton() {
-//   if (currentPage < totalPage) {
-//     currentPage++;
-//     fetchUserData(currentPage);
-//   }
-// }
-
-// function goToPage(page) {
-//   fetchUserData(page);
-// }
-
-
-
-// function displayUser(users) {
-//   const userTableBody = document.getElementById('userTable');
-//   userTableBody.innerHTML = '';
-
-//   users.forEach((user) => {
-//     const row = document.createElement('tr');
-//     row.innerHTML = `
-//       <td>${user.Id}</td>
-//       <td>${user.Name}</td>
-//       <td>${user.Gender}</td>
-//       <td>${user.Age}</td>
-//       <td>${user.Birthdate}</td>
-//       <td>${user.Address}</td>
-//     `;
-//     userTableBody.appendChild(row);
-//   });
-// }

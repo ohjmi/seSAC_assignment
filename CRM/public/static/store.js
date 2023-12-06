@@ -12,7 +12,7 @@ document.addEventListener('DOMContentLoaded', () => {
     .then(data => {
       currentPage = data.currentPage;
       totalPage = data.totalPage;
-      displayUser(data.users);
+      displayUser(data.stores);
       pagination(currentPage, totalPage);
     })
     .catch(error => {
@@ -76,17 +76,17 @@ function goToPage(page) {
 
 
 
-function displayUser(users) {
-  const userTableBody = document.getElementById('userTable');
+function displayUser(stores) {
+  const userTableBody = document.getElementById('storeTable');
   userTableBody.innerHTML = '';
 
-  users.forEach(user => {
+  stores.forEach(store => {
     const row = document.createElement('tr');
     row.innerHTML = `
-      <td><a href='#'>${user.Id}</a></td>
-      <td>${user.Name}</td>
-      <td>${user.Type}</td>
-      <td>${user.Address}</td>
+      <td><a href='/storedetail?id=${store.Id}'>${store.Id}</a></td>
+      <td>${store.Name}</td>
+      <td>${store.Type}</td>
+      <td>${store.Address}</td>
     `;
     userTableBody.appendChild(row);
   });
