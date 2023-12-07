@@ -202,15 +202,37 @@ app.get('/api/store/:id', async (req, res) => {
       });
     };
 
+    const bestUser = () => {
+      return new Promise((resolve, reject) => {
+        const bestQuery = `
+        SELECT u.Id AS user_id, u.Name AS name, count(*) AS frequency
+        FROM users u JOIN stores s JOIN orders o  
+        ON  o.UserId = u.Id AND o.StoreId = s.Id
+        WHERE s.Id = ? GROUP BY u.Id
+        HAVING frequency >= 2
+        `;
+        db.all(bestQuery, [storeId], (err, rows) => {
+          if (err) {
+            console.error(err.message);
+            reject(err);
+          } else {
+            resolve(rows);
+          }
+        });
+      });
+    };
+
     // 각각의 비동기 작업을 순차적으로 실행
     const store = await getStore();
     const month = await getMonth();
+    const best = await bestUser();
 
-    console.log(store, month);
+    console.log(store, month, best);
 
     res.json({
       stores: store,
-      month: month
+      month: month,
+      best: best
     });
   } catch (error) {
     console.error(error.message);
@@ -219,7 +241,6 @@ app.get('/api/store/:id', async (req, res) => {
 });
 
 
-app.get('/api/store/:매출')
 
 
 app.get('/api/order', (req, res) => {

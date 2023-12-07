@@ -12,81 +12,60 @@ document.addEventListener('DOMContentLoaded', () => {
     fetch(`/api/store/${idValue[1]}`)
     .then(response => response.json())
     .then(data => {
-      displayUser(data.stores);
+      console.log(data)
+      displayStore(data.stores);
+      displayMonth(data.month);
+      displayBest(data.best);
     })
     .catch(error => {
       console.error('Error fetching user data:', error);
     });
   }
   
-function pagination(currentPage, totalPage) {
-  const pageNumbersContainer = document.getElementById('pageNumbersContainer');
-  pageNumbersContainer.innerHTML = '';
 
-  for (let i = 1; i <= totalPage; i++) {
-    const pageNumberElement = document.createElement('a');
-    pageNumberElement.textContent = i;
-    pageNumberElement.className = 'page_number';
+function displayStore(stores) {
+  const storeTableBody = document.getElementById('storeTable');
+  storeTableBody.innerHTML = '';
 
-    // 현재 페이지일 때 클래스 추가
-    if (i === currentPage) {
-      console.log(currentPage)
-      pageNumberElement.style.backgroundColor = 'palevioletred';
-      pageNumberElement.style.border = '1px solid palevioletred';
-      pageNumberElement.style.color = 'white';
-
-    }
-
-    pageNumberElement.addEventListener('click', () => goToPage(i));
-    pageNumbersContainer.appendChild(pageNumberElement);
-    
-  }
-
-  const prevButtonElement = document.getElementById('prevButton');
-  prevButtonElement.style.display = currentPage === 1 || '' ? 'none' : 'block';
-
-  const nextButtonElement = document.getElementById('nextButton');
-  if (currentPage === totalPage || totalPage === 0 ) {
-    nextButtonElement.style.display = 'none';
-  } else {
-    nextButtonElement.style.display = 'block';
-  }
-
-}
-
-function prevButton() {
-  if (currentPage > 1) {
-    currentPage--;
-    fetchUserData();
-  }
-}
-
-function nextButton() {
-  if (currentPage < totalPage) {
-    currentPage++;
-    fetchUserData();
-  }
-}
-
-function goToPage(page) {
-  currentPage = page;
-  fetchUserData();
-}
-
-
-
-function displayUser(store) {
-  const userTableBody = document.getElementById('storeTable');
-  userTableBody.innerHTML = '';
-
+  stores.forEach(store => {
     const row = document.createElement('tr');
     row.innerHTML = `
-      <td>${store.Id}</td>
       <td>${store.Name}</td>
       <td>${store.Type}</td>
       <td>${store.Address}</td>
     `;
-    userTableBody.appendChild(row);
+    storeTableBody.appendChild(row);
+  });
 }
 
 
+function displayMonth(getMonth) {
+  const monthTableBody = document.getElementById('monthTable');
+  monthTableBody.innerHTML = '';
+
+  getMonth.forEach(month => {
+    const row = document.createElement('tr');
+    row.innerHTML = `
+      <td>${month.month}</td>
+      <td>${month.revenue}</td>
+      <td>${month.count}</td>
+    `;
+    monthTableBody.appendChild(row);
+  });
+}
+
+
+function displayBest(bestUsers) {
+  const bestTableBody = document.getElementById('bestTable');
+  bestTableBody.innerHTML = '';
+
+  bestUsers.forEach(bestUser => {
+    const row = document.createElement('tr');
+    row.innerHTML = `
+      <td>${bestUser.user_id}</td>
+      <td>${bestUser.name}</td>
+      <td>${bestUser.frequency}</td>
+    `;
+    bestTableBody.appendChild(row);
+  });
+}

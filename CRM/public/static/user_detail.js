@@ -80,7 +80,7 @@ function displayUser(user) {
   userTableBody.innerHTML = '';
     const row = document.createElement('tr');
     row.innerHTML = `
-      <td>${user.Id}</td>
+  
       <td>${user.Name}</td>
       <td>${user.Gender}</td>
       <td>${user.Age}</td>

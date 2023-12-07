@@ -1,11 +1,13 @@
 <!DOCTYPE html>
 <html lang="ko">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>user_detail</title>
+    <title>store_detail(month)</title>
     <link rel="stylesheet" href="./static/style.css">
 </head>
+
 <body>
     <div class="wrap">
         <nav>
@@ -21,18 +23,44 @@
             <table>
                 <thead>
                     <tr>
-                        <th>Id</th>
                         <th>Name</th>
                         <th>Type</th>
                         <th>Address</th>
                     </tr>
                 </thead>
                 <tbody id="storeTable">
-        
+
                 </tbody>
-              </table>
+            </table>
+            <h2>월별 매출</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>month</th>
+                        <th>revenue</th>
+                        <th>count</th>
+                    </tr>
+                </thead>
+                <tbody id="monthTable">
+
+                </tbody>
+            </table>
+            <h2>단골 고객</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>user_id</th>
+                        <th>name</th>
+                        <th>frequency</th>
+                    </tr>
+                </thead>
+                <tbody id="bestTable">
+
+                </tbody>
+            </table>
         </div>
     </div>
-<script src="/static/store_detail.js"></script>
+    <script src="/static/store_detail.js"></script>
 </body>
+
 </html>
