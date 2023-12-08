@@ -46,7 +46,7 @@ function displayMonth(getMonth) {
   getMonth.forEach(month => {
     const row = document.createElement('tr');
     row.innerHTML = `
-      <td>${month.month}</td>
+      <td><a href=#>${month.month}</a></td>
       <td>${month.revenue}</td>
       <td>${month.count}</td>
     `;
@@ -62,10 +62,25 @@ function displayBest(bestUsers) {
   bestUsers.forEach(bestUser => {
     const row = document.createElement('tr');
     row.innerHTML = `
-      <td>${bestUser.user_id}</td>
+      <td><a href=#>${bestUser.user_id}</a></td>
       <td>${bestUser.name}</td>
       <td>${bestUser.frequency}</td>
     `;
     bestTableBody.appendChild(row);
+  });
+}
+
+function displayDay(getDay) {
+  const dayTableBody = document.getElementById('dayTable');
+  monthTableBody.innerHTML = '';
+
+  getday.forEach(day => {
+    const row = document.createElement('tr');
+    row.innerHTML = `
+      <td>${day.month}</td>
+      <td>${day.revenue}</td>
+      <td>${day.count}</td>
+    `;
+    dayTableBody.appendChild(row);
   });
 }

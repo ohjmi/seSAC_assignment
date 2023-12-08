@@ -202,6 +202,29 @@ app.get('/api/store/:id', async (req, res) => {
       });
     };
 
+    const getDay = () => {
+      return new Promise((resolve, reject) => {
+        const monthQuery = `
+          SELECT strftime ('%m-%d', OrderAt) AS month,
+          sum(UnitPrice) AS revenue,
+          count(*) AS count
+          FROM stores s
+          JOIN items i JOIN orders o JOIN orderitems oi
+          ON s.Id = o.StoreId AND i.Id = oi.itemId AND oi.OrderId = o.Id
+          WHERE s.id = ?
+          GROUP BY month;
+        `;
+        db.all(monthQuery, [storeId], (err, rows) => {
+          if (err) {
+            console.error(err.message);
+            reject(err);
+          } else {
+            resolve(rows);
+          }
+        });
+      });
+    };
+
     const bestUser = () => {
       return new Promise((resolve, reject) => {
         const bestQuery = `
