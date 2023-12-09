@@ -2,6 +2,7 @@ const express = require('express');
 const sqlite3 = require('sqlite3');
 const fs = require('fs');
 const path = require('path');
+const { get } = require('http');
 
 const app = express();
 const port = 3000;
@@ -162,6 +163,9 @@ app.get('/api/store', (req, res) => {
 app.get('/api/store/:id', async (req, res) => {
   try {
     const storeId = req.params.id;
+    const selectedMonth = req.params.month;
+    console.log('스토어 아이디:',storeId);
+    console.log('월별:',selectedMonth);
 
     // 첫 번째 쿼리를 Promise로 처리
     const getStore = () => {
@@ -202,29 +206,6 @@ app.get('/api/store/:id', async (req, res) => {
       });
     };
 
-    const getDay = () => {
-      return new Promise((resolve, reject) => {
-        const monthQuery = `
-          SELECT strftime ('%m-%d', OrderAt) AS month,
-          sum(UnitPrice) AS revenue,
-          count(*) AS count
-          FROM stores s
-          JOIN items i JOIN orders o JOIN orderitems oi
-          ON s.Id = o.StoreId AND i.Id = oi.itemId AND oi.OrderId = o.Id
-          WHERE s.id = ?
-          GROUP BY month;
-        `;
-        db.all(monthQuery, [storeId], (err, rows) => {
-          if (err) {
-            console.error(err.message);
-            reject(err);
-          } else {
-            resolve(rows);
-          }
-        });
-      });
-    };
-
     const bestUser = () => {
       return new Promise((resolve, reject) => {
         const bestQuery = `
@@ -245,16 +226,39 @@ app.get('/api/store/:id', async (req, res) => {
       });
     };
 
+        const getDay = () => {
+      return new Promise((resolve, reject) => {
+        const dayQuery = `
+          SELECT strftime ('%m-%d', OrderAt) AS month,
+          sum(UnitPrice) AS revenue,
+          count(*) AS count
+          FROM stores s
+          JOIN items i JOIN orders o JOIN orderitems oi
+          ON s.Id = o.StoreId AND i.Id = oi.itemId AND oi.OrderId = o.Id
+          WHERE s.id = ?
+          GROUP BY month;
+        `;
+        db.all(dayQuery, [selectedMonth], (err, rows) => {
+          if (err) {
+            console.error(err.message);
+            reject(err);
+          } else {
+            resolve(rows);
+          }
+        });
+      });
+    };
     // 각각의 비동기 작업을 순차적으로 실행
     const store = await getStore();
     const month = await getMonth();
+    const day = await getDay();
     const best = await bestUser();
-
-    console.log(store, month, best);
+    // console.log(store, month, best);
 
     res.json({
       stores: store,
       month: month,
+      day: day,
       best: best
     });
   } catch (error) {
@@ -264,6 +268,50 @@ app.get('/api/store/:id', async (req, res) => {
 });
 
 
+
+// app.get('/api/store/:month', async (req, res) => {
+//   console.log(req)
+//   try {
+//     const selectedMonth = req.params.month;
+//     console.log('메롱메롱',selectedMonth)
+
+//     const getDay = () => {
+//       return new Promise((resolve, reject) => {
+//         const dayQuery = `
+//           SELECT strftime ('%m-%d', OrderAt) AS month,
+//           sum(UnitPrice) AS revenue,
+//           count(*) AS count
+//           FROM stores s
+//           JOIN items i JOIN orders o JOIN orderitems oi
+//           ON s.Id = o.StoreId AND i.Id = oi.itemId AND oi.OrderId = o.Id
+//           WHERE s.id = ?
+//           GROUP BY month;
+//         `;
+//         db.all(dayQuery, [selectedMonth], (err, rows) => {
+//           if (err) {
+//             console.error(err.message);
+//             reject(err);
+//           } else {
+//             resolve(rows);
+//           }
+//         });
+//       });
+//     };
+
+
+//     // 각각의 비동기 작업을 순차적으로 실행
+//     const day = await getDay();
+
+//     console.log(day);
+
+//     res.json({
+//       day: day,
+//     });
+//   } catch (error) {
+//     console.error(error.message);
+//     res.status(500).json({ error: 'Internal Server Error' });
+//   }
+// });
 
 
 app.get('/api/order', (req, res) => {

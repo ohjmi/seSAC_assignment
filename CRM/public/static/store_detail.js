@@ -1,11 +1,8 @@
-let currentPage = 1;
-let totalPage = 1; // 초기값 설정
-
 document.addEventListener('DOMContentLoaded', () => {
-  fetchUserData();
+  fetchStoreData();
   });
   
-  function fetchUserData() {
+  function fetchStoreData() {
     const idSearch = window.location.search;
     const idValue = idSearch.split('=');
     console.log(idValue[1]);
@@ -16,11 +13,14 @@ document.addEventListener('DOMContentLoaded', () => {
       displayStore(data.stores);
       displayMonth(data.month);
       displayBest(data.best);
+      displayDay(data.day);
     })
     .catch(error => {
       console.error('Error fetching user data:', error);
     });
   }
+
+  
   
 
 function displayStore(stores) {
@@ -46,7 +46,7 @@ function displayMonth(getMonth) {
   getMonth.forEach(month => {
     const row = document.createElement('tr');
     row.innerHTML = `
-      <td><a href=#>${month.month}</a></td>
+    <td><a href='#' onclick='showDayTable("${month.month}");'>${month.month}</a></td>
       <td>${month.revenue}</td>
       <td>${month.count}</td>
     `;
@@ -72,9 +72,9 @@ function displayBest(bestUsers) {
 
 function displayDay(getDay) {
   const dayTableBody = document.getElementById('dayTable');
-  monthTableBody.innerHTML = '';
+  dayTableBody.innerHTML = '';
 
-  getday.forEach(day => {
+  getDay.forEach(day => {
     const row = document.createElement('tr');
     row.innerHTML = `
       <td>${day.month}</td>
@@ -84,3 +84,52 @@ function displayDay(getDay) {
     dayTableBody.appendChild(row);
   });
 }
+
+function showDayTable(selectedMonth) {
+  // displayMonth 테이블을 숨깁니다.
+  console.log(selectedMonth);
+  document.getElementById('monthTable').style.display = 'none';
+
+  // dayTable을 보이게 합니다.
+  document.getElementById('dayTable').style.display = 'block';
+
+  // 선택된 월 데이터로 displayDay 함수를 호출합니다.
+  fetch(`/api/store/${selectedMonth}`)
+    .then(response => response.json())
+    .then(data => {
+      console.log(data);
+      // displayDay 함수 호출로 dayTable을 채웁니다.
+      displayDay(data.day);
+    })
+    .catch(error => {
+      console.error('Error fetching day data:', error);
+    });
+}
+
+
+
+// function showDayTable(selectedMonth) {
+//   // displayMonth 테이블을 숨깁니다.
+//   document.getElementById('monthTable').style.display = 'none';
+
+//   // dayTable을 보이게 합니다.
+//   document.getElementById('dayTable').style.display = 'block';
+
+//   // 선택된 월 데이터로 displayDay 함수를 호출합니다.
+//   const fetchPromise = fetch(`/api/store/${selectedMonth}`);
+
+//   // 확인: fetchPromise가 정의되어 있고 then 메서드를 가지고 있는지 확인
+//   if (fetchPromise && typeof fetchPromise.then === 'function') {
+//     fetchPromise
+//       .then(response => response.json())
+//       .then(data => {
+//         // displayDay 함수 호출로 dayTable을 채웁니다.
+//         displayDay(data.day);
+//       })
+//       .catch(error => {
+//         console.error('Error fetching day data:', error);
+//       });
+//   } else {
+//     console.error('Fetch promise is undefined or does not have a then method');
+//   }
+// }
