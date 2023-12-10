@@ -6,8 +6,7 @@ document.addEventListener('DOMContentLoaded', () => {
   });
   
   function fetchUserData() {
-    const searchValue = document.getElementById('searchInput').value;
-    fetch(`/api/item?search=${searchValue}&page=${currentPage}`)
+    fetch(`/api/item?page=${currentPage}`)
     .then(response => response.json())
     .then(data => {
       currentPage = data.currentPage;

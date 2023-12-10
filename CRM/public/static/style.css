@@ -112,3 +112,6 @@ table tbody tr td a {
     height: 36px;
     cursor: pointer;
 }
+#topstore_wrap ul li {
+    list-style: circle;
+}

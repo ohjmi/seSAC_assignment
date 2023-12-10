@@ -18,10 +18,10 @@
             </ul>
         </nav>
         <div class="table_wrap">
-            <table>
+            <h2>고객 정보</h2>
+            <table id="userTable">
                 <thead>
                     <tr>
-                        <!-- <th>Id</th> -->
                         <th>Name</th>
                         <th>Gender</th>
                         <th>Age</th>
@@ -29,10 +29,25 @@
                         <th>Address</th>
                     </tr>
                 </thead>
-                <tbody id="userTable">
+                <tbody id="userTableBody">
+                </tbody>
+            </table>
+            <h2>주문 정보</h2>
+            <table id="orderTable">
+                <thead>
+                    <tr>
+                        <th>order id</th>
+                        <th>purchased date</th>
+                        <th>purchased location</th>
+                    </tr>
+                </thead>
+                <tbody id="orderTableBody">
         
                 </tbody>
             </table>
+            <p>자주 방문한 매장 Top 5</p>
+            <div id="topstore_wrap">
+            </div>
         </div>
         <!-- <p><a href="./user.html">사용자 목록으로 돌아가기</a></p> -->
     </div>

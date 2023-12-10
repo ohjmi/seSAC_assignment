@@ -2,7 +2,7 @@ const express = require('express');
 const sqlite3 = require('sqlite3');
 const fs = require('fs');
 const path = require('path');
-const { get } = require('http');
+
 
 const app = express();
 const port = 3000;
@@ -88,29 +88,101 @@ app.get('/api/user', (req, res) => {
   });
 });
 
-app.get('/api/user/:id', (req, res) => {
-  const userId = req.params.id;
-  const query = 'SELECT * FROM users';
+// app.get('/api/user/:id', (req, res) => {
+//   const userId = req.params.id;
+//   const query = 'SELECT * FROM users';
 
-  db.all(query, (err, rows) => {
-    if (err) {
-      console.error(err.message);
-      res.status(500).json({ error: 'Internal Server Error' });
-    } else {
-      const user = rows.find(item => item.Id === userId);
-      if (!user) {
-        // 사용자를 찾지 못한 경우 처리
-        res.status(404).send('사용자를 찾을 수 없습니다.');
-        return;
-      }
-      // 사용자 데이터로 사용자 상세 페이지 렌더링
-      res.json({
-        users: user,
+//   db.all(query, (err, rows) => {
+//     if (err) {
+//       console.error(err.message);
+//       res.status(500).json({ error: 'Internal Server Error' });
+//     } else {
+//       const user = rows.find(item => item.Id === userId);
+//       if (!user) {
+//         // 사용자를 찾지 못한 경우 처리
+//         res.status(404).send('사용자를 찾을 수 없습니다.');
+//         return;
+//       }
+//       // 사용자 데이터로 사용자 상세 페이지 렌더링
+//       res.json({
+//         users: user,
+//       });
+//     }
+//   })
+
+// });
+app.get('/api/user/:id', async (req, res) => {
+  try {
+    const userId = req.params.id;
+    // 첫 번째 쿼리를 Promise로 처리
+    const getUser = () => {
+      return new Promise((resolve, reject) => {
+        const query = 'SELECT * FROM users WHERE id = ?';
+        db.all(query, [userId], (err, rows) => {
+          if (err) {
+            console.error(err.message);
+            reject(err);
+          } else {
+            resolve(rows);
+          }
+        });
       });
-    }
-  })
+    };
+    // 두 번째 쿼리를 Promise로 처리
+    const getOrder = () => {
+      return new Promise((resolve, reject) => {
+        const orderQuery = `
+        SELECT o.Id AS orderid, o.OrderAt AS purchaseddate, s.Id AS purchasedlocation
+        FROM users u JOIN stores s JOIN orders o
+        ON o.UserId = u.Id AND o.StoreId = s.Id
+        WHERE u.Id = ? GROUP BY strftime ('%Y-%m', o.OrderAt), u.Id
+        `;
+        db.all(orderQuery, [userId], (err, rows) => {
+          if (err) {
+            console.error(err.message);
+            reject(err);
+          } else {
+            resolve(rows);
+          }
+        });
+      });
+    };
+    const bestStore = () => {
+      return new Promise((resolve, reject) => {
+        const bestStoreQuery = `
+        SELECT s.Name AS storeName, COUNT(*) AS orderCount
+        FROM users u JOIN stores s JOIN orders o 
+        ON o.UserId = u.Id AND o.StoreId = s.Id
+        WHERE u.Id = ? GROUP BY s.Id, s.Name
+        ORDER BY orderCount DESC
+        LIMIT 5;
+        `;
+        db.all(bestStoreQuery, [userId], (err, rows) => {
+          if (err) {
+            console.error(err.message);
+            reject(err);
+          } else {
+            resolve(rows);
+          }
+        });
+      });
+    };
+    // 각각의 비동기 작업을 순차적으로 실행
+    const user = await getUser();
+    const order = await getOrder();
+    const topStore = await bestStore();
 
+    res.json({
+      user: user,
+      order: order,
+      topStore: topStore
+    });
+  } catch (error) {
+    console.error(error.message);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
 });
+
 
 app.get('/api/store', (req, res) => {
 
@@ -163,10 +235,6 @@ app.get('/api/store', (req, res) => {
 app.get('/api/store/:id', async (req, res) => {
   try {
     const storeId = req.params.id;
-    const selectedMonth = req.params.month;
-    console.log('스토어 아이디:',storeId);
-    console.log('월별:',selectedMonth);
-
     // 첫 번째 쿼리를 Promise로 처리
     const getStore = () => {
       return new Promise((resolve, reject) => {
@@ -226,7 +294,56 @@ app.get('/api/store/:id', async (req, res) => {
       });
     };
 
-        const getDay = () => {
+    //     const getDay = () => {
+    //   return new Promise((resolve, reject) => {
+    //     const dayQuery = `
+    //       SELECT strftime ('%m-%d', OrderAt) AS month,
+    //       sum(UnitPrice) AS revenue,
+    //       count(*) AS count
+    //       FROM stores s
+    //       JOIN items i JOIN orders o JOIN orderitems oi
+    //       ON s.Id = o.StoreId AND i.Id = oi.itemId AND oi.OrderId = o.Id
+    //       WHERE s.id = ?
+    //       GROUP BY month;
+    //     `;
+    //     db.all(dayQuery, [storeId], (err, rows) => {
+    //       if (err) {
+    //         console.error(err.message);
+    //         reject(err);
+    //       } else {
+    //         resolve(rows);
+    //       }
+    //     });
+    //   });
+    // };
+    // 각각의 비동기 작업을 순차적으로 실행
+    const store = await getStore();
+    const month = await getMonth();
+    // const day = await getDay();
+    const best = await bestUser();
+
+
+    res.json({
+      stores: store,
+      month: month,
+      // day: day,
+      best: best
+    });
+  } catch (error) {
+    console.error(error.message);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
+
+
+
+app.get('/api/store/:month', async (req, res) => {
+  console.log(req)
+  try {
+    const selectedMonth = req.params.month;
+    console.log('메롱메롱',selectedMonth);
+
+    const getDay = () => {
       return new Promise((resolve, reject) => {
         const dayQuery = `
           SELECT strftime ('%m-%d', OrderAt) AS month,
@@ -238,6 +355,7 @@ app.get('/api/store/:id', async (req, res) => {
           WHERE s.id = ?
           GROUP BY month;
         `;
+        console.log('Executed Query:', dayQuery.replace('?', selectedMonth)); // 확인용 로그 추가
         db.all(dayQuery, [selectedMonth], (err, rows) => {
           if (err) {
             console.error(err.message);
@@ -248,18 +366,15 @@ app.get('/api/store/:id', async (req, res) => {
         });
       });
     };
+
+
     // 각각의 비동기 작업을 순차적으로 실행
-    const store = await getStore();
-    const month = await getMonth();
     const day = await getDay();
-    const best = await bestUser();
-    // console.log(store, month, best);
+
+    console.log(day);
 
     res.json({
-      stores: store,
-      month: month,
       day: day,
-      best: best
     });
   } catch (error) {
     console.error(error.message);
@@ -268,63 +383,12 @@ app.get('/api/store/:id', async (req, res) => {
 });
 
 
-
-// app.get('/api/store/:month', async (req, res) => {
-//   console.log(req)
-//   try {
-//     const selectedMonth = req.params.month;
-//     console.log('메롱메롱',selectedMonth)
-
-//     const getDay = () => {
-//       return new Promise((resolve, reject) => {
-//         const dayQuery = `
-//           SELECT strftime ('%m-%d', OrderAt) AS month,
-//           sum(UnitPrice) AS revenue,
-//           count(*) AS count
-//           FROM stores s
-//           JOIN items i JOIN orders o JOIN orderitems oi
-//           ON s.Id = o.StoreId AND i.Id = oi.itemId AND oi.OrderId = o.Id
-//           WHERE s.id = ?
-//           GROUP BY month;
-//         `;
-//         db.all(dayQuery, [selectedMonth], (err, rows) => {
-//           if (err) {
-//             console.error(err.message);
-//             reject(err);
-//           } else {
-//             resolve(rows);
-//           }
-//         });
-//       });
-//     };
-
-
-//     // 각각의 비동기 작업을 순차적으로 실행
-//     const day = await getDay();
-
-//     console.log(day);
-
-//     res.json({
-//       day: day,
-//     });
-//   } catch (error) {
-//     console.error(error.message);
-//     res.status(500).json({ error: 'Internal Server Error' });
-//   }
-// });
-
-
 app.get('/api/order', (req, res) => {
 
   const itemsPerPage = 500;
   let startIndex;
   let endIndex;
 
-  console.log(`요청 GET 파라미터: ${req.query.page}`);
-
-  // 검색어 받아오기
-  const searchName = req.query.search || '';
-  console.log('검색어:', searchName)
 
   // a태그의 하이퍼링크를 통해서 원하는 페이지로 이동한다.
   page = req.query.page || 1;
@@ -339,23 +403,20 @@ app.get('/api/order', (req, res) => {
       res.status(500).json({ error: 'Internal Server Error' });
     } else {
       // 검색어를 포함하는 사용자만 필터링
-      const filterData = rows.filter(user => user.Id.toLowerCase().includes(searchName.toLowerCase()));
-
+      
       // 전체 페이지 수를 계산한다.
-      const totalPage = Math.ceil(filterData.length / itemsPerPage);
-      // const totalPage = Math.ceil(rows.length / itemsPerPage);
+      const totalPage = Math.ceil(rows.length / itemsPerPage);
       console.log(`전체 데이터 개수는 ${rows.length}이며,`,
                   `페이지당 개수는 ${itemsPerPage}이고`,
                   `전체 페이지 수는 ${totalPage}입니다.`);
 
       // 미션1. 읽은 데이터에서 무조건, 앞에 50개만 준다.
-      const dataList = filterData.slice(startIndex, endIndex);
+      const dataList = rows.slice(startIndex, endIndex);
 
       res.json({
         users: dataList,
         totalPage: totalPage,
         currentPage: parseInt(page),
-        searchName: searchName,
       });
     }
   });
@@ -371,9 +432,6 @@ app.get('/api/item', (req, res) => {
 
   console.log(`요청 GET 파라미터: ${req.query.page}`);
 
-  // 검색어 받아오기
-  const searchName = req.query.search || '';
-  console.log('검색어:', searchName)
 
   // a태그의 하이퍼링크를 통해서 원하는 페이지로 이동한다.
   page = req.query.page || 1;
@@ -387,28 +445,74 @@ app.get('/api/item', (req, res) => {
       console.error(err.message);
       res.status(500).json({ error: 'Internal Server Error' });
     } else {
-      // 검색어를 포함하는 사용자만 필터링
-      const filterData = rows.filter(user => user.Id.toLowerCase().includes(searchName.toLowerCase()));
 
       // 전체 페이지 수를 계산한다.
-      const totalPage = Math.ceil(filterData.length / itemsPerPage);
+      const totalPage = Math.ceil(rows.length / itemsPerPage);
       console.log(`전체 데이터 개수는 ${rows.length}이며,`,
                   `페이지당 개수는 ${itemsPerPage}이고`,
                   `전체 페이지 수는 ${totalPage}입니다.`);
 
       // 미션1. 읽은 데이터에서 무조건, 앞에 50개만 준다.
-      const dataList = filterData.slice(startIndex, endIndex);
+      const dataList = rows.slice(startIndex, endIndex);
 
       res.json({
         users: dataList,
         totalPage: totalPage,
         currentPage: parseInt(page),
-        searchName: searchName,
       });
     }
   });
 });
 
+app.get('/api/item/:id', async (req, res) => {
+  try {
+    const itemId = req.params.id;
+    // 첫 번째 쿼리를 Promise로 처리
+    const getItem = () => {
+      return new Promise((resolve, reject) => {
+        const query = 'SELECT * FROM items WHERE id = ?';
+        db.all(query, [itemId], (err, rows) => {
+          if (err) {
+            console.error(err.message);
+            reject(err);
+          } else {
+            resolve(rows);
+          }
+        });
+      });
+    };
+    // 두 번째 쿼리를 Promise로 처리
+    const getMonthItem = () => {
+      return new Promise((resolve, reject) => {
+        const monthItemQuery = `
+        SELECT o.Id AS orderid, o.OrderAt AS purchaseddate, s.Id AS purchasedlocation
+        FROM users u JOIN stores s JOIN orders o
+        ON o.UserId = u.Id AND o.StoreId = s.Id
+        WHERE u.Id = ? GROUP BY strftime ('%Y-%m', o.OrderAt), u.Id
+        `;
+        db.all(monthItemQuery, [itemId], (err, rows) => {
+          if (err) {
+            console.error(err.message);
+            reject(err);
+          } else {
+            resolve(rows);
+          }
+        });
+      });
+    };
+    // 각각의 비동기 작업을 순차적으로 실행
+    const item = await getItem();
+    const monthItem = await getMonthItem();
+
+    res.json({
+      item: item,
+      monthItem: monthItem,
+    });
+  } catch (error) {
+    console.error(error.message);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
 
 
 app.get('/api/orderitem', (req, res) => {
@@ -420,9 +524,6 @@ app.get('/api/orderitem', (req, res) => {
 
   console.log(`요청 GET 파라미터: ${req.query.page}`);
 
-  // 검색어 받아오기
-  const searchName = req.query.search || '';
-  console.log('검색어:', searchName)
 
   // a태그의 하이퍼링크를 통해서 원하는 페이지로 이동한다.
   page = req.query.page || 1;
@@ -436,23 +537,20 @@ app.get('/api/orderitem', (req, res) => {
       console.error(err.message);
       res.status(500).json({ error: 'Internal Server Error' });
     } else {
-      // 검색어를 포함하는 사용자만 필터링
-      const filterData = rows.filter(user => user.Id.toLowerCase().includes(searchName.toLowerCase()));
 
       // 전체 페이지 수를 계산한다.
-      const totalPage = Math.ceil(filterData.length / itemsPerPage);
+      const totalPage = Math.ceil(rows.length / itemsPerPage);
       console.log(`전체 데이터 개수는 ${rows.length}이며,`,
                   `페이지당 개수는 ${itemsPerPage}이고`,
                   `전체 페이지 수는 ${totalPage}입니다.`);
 
       // 미션1. 읽은 데이터에서 무조건, 앞에 50개만 준다.
-      const dataList = filterData.slice(startIndex, endIndex);
+      const dataList = rows.slice(startIndex, endIndex);
 
       res.json({
         users: dataList,
         totalPage: totalPage,
         currentPage: parseInt(page),
-        searchName: searchName,
       });
     }
   });

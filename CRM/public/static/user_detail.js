@@ -12,7 +12,11 @@ document.addEventListener('DOMContentLoaded', () => {
     fetch(`/api/user/${idValue[1]}`)
     .then(response => response.json())
     .then(data => {
-      displayUser(data.users);
+      console.log(data);
+      displayUser(data.user);
+      displayOrder(data.order);
+      displayTopStore(data.topStore);
+
     })
     .catch(error => {
       console.error('Error fetching user data:', error);
@@ -74,13 +78,12 @@ function goToPage(page) {
 }
 
 
-
-function displayUser(user) {
-  const userTableBody = document.getElementById('userTable');
+function displayUser(users) {
+  const userTableBody = document.getElementById('userTableBody');
   userTableBody.innerHTML = '';
+  users.forEach(user => {
     const row = document.createElement('tr');
     row.innerHTML = `
-  
       <td>${user.Name}</td>
       <td>${user.Gender}</td>
       <td>${user.Age}</td>
@@ -88,8 +91,32 @@ function displayUser(user) {
       <td>${user.Address}</td>
     `;
     userTableBody.appendChild(row);
-
+  });
 }
 
+function displayOrder(orders) {
+  const orderTableBody = document.getElementById('orderTableBody');
+  orderTableBody.innerHTML = '';
+  orders.forEach(order => {
+    const row = document.createElement('tr');
+    row.innerHTML = `
+      <td><a href='#'>${order.orderid}</a></td>
+      <td>${order.purchaseddate}</td>
+      <td><a href='#'>${order.purchasedlocation}</a></td>
+    `;
+    orderTableBody.appendChild(row);
+  });
+}
 
+function displayTopStore(topStores) {
+  const topStoreList = document.getElementById('topstore_wrap');
+  topStoreList.innerHTML = '';
+  topStores.forEach(topStore => {
+    const row = document.createElement('ul');
+    row.innerHTML = `
+      <li>${topStore.storeName}(${topStore.orderCount}번 방문)</li>
+    `;
+    topStoreList.appendChild(row);
+  });
+}
 
