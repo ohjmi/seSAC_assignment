@@ -31,11 +31,17 @@ app.get('/store', (req, res) => {
 app.get('/storedetail', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'store_detail.html'));
 });
+app.get('/storeday', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'store_day.html'));
+});
 app.get('/order', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'order.html'));
 });
 app.get('/item', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'item.html'));
+});
+app.get('/itemdetail', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'item_detail.html'));
 });
 app.get('/orderitem', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'orderitem.html'));
@@ -88,29 +94,7 @@ app.get('/api/user', (req, res) => {
   });
 });
 
-// app.get('/api/user/:id', (req, res) => {
-//   const userId = req.params.id;
-//   const query = 'SELECT * FROM users';
 
-//   db.all(query, (err, rows) => {
-//     if (err) {
-//       console.error(err.message);
-//       res.status(500).json({ error: 'Internal Server Error' });
-//     } else {
-//       const user = rows.find(item => item.Id === userId);
-//       if (!user) {
-//         // 사용자를 찾지 못한 경우 처리
-//         res.status(404).send('사용자를 찾을 수 없습니다.');
-//         return;
-//       }
-//       // 사용자 데이터로 사용자 상세 페이지 렌더링
-//       res.json({
-//         users: user,
-//       });
-//     }
-//   })
-
-// });
 app.get('/api/user/:id', async (req, res) => {
   try {
     const userId = req.params.id;
@@ -167,15 +151,39 @@ app.get('/api/user/:id', async (req, res) => {
         });
       });
     };
+    const bestItem = () => {
+      return new Promise((resolve, reject) => {
+        const bestItemQuery = `
+        SELECT i.Name || ' ' || i.Type AS itemName, COUNT(*) AS orderCount
+        FROM users u JOIN stores s JOIN orders o JOIN orderitems oi JOIN items i 
+        ON o.StoreId = s.Id AND u.Id = o.UserId AND o.Id = oi.OrderId AND oi.ItemId = i.Id
+        WHERE u.Id = ?
+        GROUP BY i.Name, i.Type
+        ORDER BY orderCount DESC
+        LIMIT 5;
+        `;
+        db.all(bestItemQuery, [userId], (err, rows) => {
+          if (err) {
+            console.error(err.message);
+            reject(err);
+          } else {
+            resolve(rows);
+          }
+        });
+      });
+    };
     // 각각의 비동기 작업을 순차적으로 실행
     const user = await getUser();
     const order = await getOrder();
     const topStore = await bestStore();
+    const topItem = await bestItem();
+    console.log(topItem)
 
     res.json({
       user: user,
       order: order,
-      topStore: topStore
+      topStore: topStore,
+      topItem: topItem
     });
   } catch (error) {
     console.error(error.message);
@@ -337,11 +345,11 @@ app.get('/api/store/:id', async (req, res) => {
 
 
 
-app.get('/api/store/:month', async (req, res) => {
+app.get('/api/store/:id?', async (req, res) => {
   console.log(req)
   try {
-    const selectedMonth = req.params.month;
-    console.log('메롱메롱',selectedMonth);
+    const month = req.params.month;
+    console.log('메롱메롱',month);
 
     const getDay = () => {
       return new Promise((resolve, reject) => {
@@ -355,8 +363,7 @@ app.get('/api/store/:month', async (req, res) => {
           WHERE s.id = ?
           GROUP BY month;
         `;
-        console.log('Executed Query:', dayQuery.replace('?', selectedMonth)); // 확인용 로그 추가
-        db.all(dayQuery, [selectedMonth], (err, rows) => {
+        db.all(dayQuery, [month], (err, rows) => {
           if (err) {
             console.error(err.message);
             reject(err);
@@ -456,7 +463,7 @@ app.get('/api/item', (req, res) => {
       const dataList = rows.slice(startIndex, endIndex);
 
       res.json({
-        users: dataList,
+        items: dataList,
         totalPage: totalPage,
         currentPage: parseInt(page),
       });
@@ -467,6 +474,7 @@ app.get('/api/item', (req, res) => {
 app.get('/api/item/:id', async (req, res) => {
   try {
     const itemId = req.params.id;
+    console.log(itemId)
     // 첫 번째 쿼리를 Promise로 처리
     const getItem = () => {
       return new Promise((resolve, reject) => {
@@ -485,10 +493,14 @@ app.get('/api/item/:id', async (req, res) => {
     const getMonthItem = () => {
       return new Promise((resolve, reject) => {
         const monthItemQuery = `
-        SELECT o.Id AS orderid, o.OrderAt AS purchaseddate, s.Id AS purchasedlocation
-        FROM users u JOIN stores s JOIN orders o
-        ON o.UserId = u.Id AND o.StoreId = s.Id
-        WHERE u.Id = ? GROUP BY strftime ('%Y-%m', o.OrderAt), u.Id
+        SELECT strftime('%Y-%m', o.OrderAt) AS month, 
+        SUM(i.UnitPrice) AS totalRevenue,
+        COUNT(*) AS count
+        FROM users u JOIN orders o JOIN items i JOIN orderitems oi
+        ON u.Id = o.UserId AND o.Id = oi.OrderId AND oi.ItemId = i.Id
+        WHERE i.Id = ?
+        GROUP BY strftime('%Y-%m', o.OrderAt), i.Name, i.Type
+        ORDER BY month ASC
         `;
         db.all(monthItemQuery, [itemId], (err, rows) => {
           if (err) {

@@ -29,7 +29,7 @@ function pagination(currentPage, totalPage) {
     pageNumberElement.textContent = i;
     pageNumberElement.className = 'page_number';
 
-    // 현재 페이지일 때 클래스 추가
+
     if (i === currentPage) {
       console.log(currentPage)
       pageNumberElement.style.backgroundColor = 'palevioletred';

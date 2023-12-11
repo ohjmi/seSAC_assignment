@@ -16,6 +16,7 @@ document.addEventListener('DOMContentLoaded', () => {
       displayUser(data.user);
       displayOrder(data.order);
       displayTopStore(data.topStore);
+      displayTopItem(data.topItem);
 
     })
     .catch(error => {
@@ -117,6 +118,18 @@ function displayTopStore(topStores) {
       <li>${topStore.storeName}(${topStore.orderCount}번 방문)</li>
     `;
     topStoreList.appendChild(row);
+  });
+}
+
+function displayTopItem(topItems) {
+  const topItemList = document.getElementById('topitem_wrap');
+  topItemList.innerHTML = '';
+  topItems.forEach(topItem => {
+    const row = document.createElement('ul');
+    row.innerHTML = `
+      <li>${topItem.itemName}(${topItem.orderCount}번 주문)</li>
+    `;
+    topItemList.appendChild(row);
   });
 }
 

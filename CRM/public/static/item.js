@@ -11,7 +11,7 @@ document.addEventListener('DOMContentLoaded', () => {
     .then(data => {
       currentPage = data.currentPage;
       totalPage = data.totalPage;
-      displayUser(data.users);
+      displayItem(data.items);
       pagination(currentPage, totalPage);
     })
     .catch(error => {
@@ -75,19 +75,19 @@ function goToPage(page) {
 
 
 
-function displayUser(users) {
-  const userTableBody = document.getElementById('userTable');
-  userTableBody.innerHTML = '';
+function displayItem(items) {
+  const itemTableBody = document.getElementById('itemTableBody');
+  itemTableBody.innerHTML = '';
 
-  users.forEach(user => {
+  items.forEach(item => {
     const row = document.createElement('tr');
     row.innerHTML = `
-      <td><a href='#'>${user.Id}</a></td>
-      <td>${user.Name}</td>
-      <td>${user.Type}</td>
-      <td>${user.UnitPrice}원</td>
+      <td><a href= '/itemdetail?id=${item.Id}'>${item.Id}</a></td>
+      <td>${item.Name}</td>
+      <td>${item.Type}</td>
+      <td>${item.UnitPrice}원</td>
     `;
-    userTableBody.appendChild(row);
+    itemTableBody.appendChild(row);
   });
 }
 

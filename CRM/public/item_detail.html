@@ -1,11 +1,13 @@
 <!DOCTYPE html>
 <html lang="ko">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>item</title>
+    <title>itemdetail</title>
     <link rel="stylesheet" href="./static/style.css">
 </head>
+
 <body>
     <div class="wrap">
         <nav>
@@ -18,26 +20,34 @@
             </ul>
         </nav>
         <div class="table_wrap">
+            <h2>상품 정보</h2>
             <table id="itemTable">
                 <thead>
                     <tr>
-                        <th>Id</th>
                         <th>Name</th>
-                        <th>Type</th>
                         <th>Unitprice</th>
                     </tr>
                 </thead>
                 <tbody id="itemTableBody">
-        
+
                 </tbody>
-              </table>
+            </table>
+            <h2>월간 매출액</h2>
+            <table id="itemMonth">
+                <thead>
+                    <tr>
+                        <th>Month</th>
+                        <th>Total Revenue</th>
+                        <th>Item Count</th>
+                    </tr>
+                </thead>
+                <tbody id="itemMonthBody">
+
+                </tbody>
+            </table>
         </div>
-          <div id="pagination">
-            <button id="prevButton" onclick="prevButton()">Previous</button>
-            <span id="pageNumbersContainer"></span>
-            <button id="nextButton" onclick="nextButton()">Next</button>
-          </div>
     </div>
-<script src="/static/item.js"></script>
+    <script src="/static/item_detail.js"></script>
 </body>
+
 </html>
