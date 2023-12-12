@@ -7,9 +7,12 @@ document.addEventListener('DOMContentLoaded', () => {
   
   function fetchUserData() {
     const searchValue = document.getElementById('searchInput').value;
-    fetch(`/api/user?search=${searchValue}&page=${currentPage}`)
+    const genderSelect = document.getElementById('gender').value;
+    // const selectedGender = genderSelect.value;
+    fetch(`/api/user?search=${searchValue}&gender=${genderSelect}&page=${currentPage}`)
     .then(response => response.json())
     .then(data => {
+      console.log(data);
       currentPage = data.currentPage;
       totalPage = data.totalPage;
       displayUser(data.users);

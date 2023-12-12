@@ -1,11 +1,13 @@
 <!DOCTYPE html>
 <html lang="ko">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>user_detail</title>
+    <title>store_detail(day)</title>
     <link rel="stylesheet" href="./static/style.css">
 </head>
+
 <body>
     <div class="wrap">
         <nav>
@@ -18,42 +20,46 @@
             </ul>
         </nav>
         <div class="table_wrap">
-            <h2>고객 정보</h2>
-            <table id="userTable">
+            <table id="storeTable">
                 <thead>
                     <tr>
                         <th>Name</th>
-                        <th>Gender</th>
-                        <th>Age</th>
-                        <th>Birthdate</th>
+                        <th>Type</th>
                         <th>Address</th>
                     </tr>
                 </thead>
-                <tbody id="userTableBody">
+                <tbody id="storeTableBody">
+
                 </tbody>
             </table>
-            <h2>주문 정보</h2>
-            <table id="orderTable">
+            <h2>일별 매출</h2>
+            <table id="dayTable"> 
                 <thead>
                     <tr>
-                        <th>order id</th>
-                        <th>purchased date</th>
-                        <th>purchased location</th>
+                        <th>month</th>
+                        <th>revenue</th>
+                        <th>count</th>
                     </tr>
                 </thead>
-                <tbody id="orderTableBody">
-        
+                <tbody id="dayTableBody">
                 </tbody>
             </table>
-            <p>자주 방문한 매장 Top 5</p>
-            <div id="topstore_wrap">
-            </div>
-            <p>자주 주문한 상품명 Top 5</p>
-            <div id="topitem_wrap">
-            </div>
+            <h2>단골 고객</h2>
+            <table id="dayBestTable">
+                <thead>
+                    <tr>
+                        <th>user_id</th>
+                        <th>name</th>
+                        <th>frequency</th>
+                    </tr>
+                </thead>
+                <tbody id="dayBestTableBody">
+
+                </tbody>
+            </table>
         </div>
-        <!-- <p><a href="./user.html">사용자 목록으로 돌아가기</a></p> -->
     </div>
-<script src="/static/user_detail.js"></script>
+    <script src="/static/store_day.js"></script>
 </body>
+
 </html>

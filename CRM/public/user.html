@@ -19,10 +19,11 @@
         </nav>
         <form action="/user" method="get">
             <input type="text" id="searchInput" name="search" placeholder="이름을 입력하세요">
-            <select>
-                <option>여자</option>
-                <option>남자</option>
-            </select>
+            <select id="gender" name="gender">
+                <option value="">전체</option>
+                <option value="Male">남성</option>
+                <option value="Female">여성</option>
+              </select>
             <button type="button" id="searchButton" onclick="fetchUserData()">검색</button>
         </form>
         
