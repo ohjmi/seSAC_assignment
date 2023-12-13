@@ -57,6 +57,10 @@ select {
     height: 760px;
     overflow: auto;
 }
+.item_table_wrap {
+    height: 450px;
+    overflow: auto;
+}
 table {
     width: 100%;;
     border-collapse: collapse;

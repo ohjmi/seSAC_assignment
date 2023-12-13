@@ -47,3 +47,22 @@ function displayItemMonth(monthItems) {
     itemMonthTableBody.appendChild(row);
   });
 }
+
+
+var ctx = document.getElementById('chart_wrap').getContext('2d');
+
+const mixedChart = new Chart(ctx, {
+  data: {
+      datasets: [{
+          type: 'bar',
+          label: 'Bar Dataset',
+          data: [10, 20, 30, 40]
+      }, {
+          type: 'line',
+          label: 'Line Dataset',
+          data: [5, 15, 25, 35],
+      }],
+      labels: ['January', 'February', 'March', 'April']
+  },
+  // options: options
+});

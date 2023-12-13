@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>itemdetail</title>
     <link rel="stylesheet" href="./static/style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 
 <body>
@@ -19,7 +20,7 @@
                 <li><a href="./orderitem">OrderItem</a></li>
             </ul>
         </nav>
-        <div class="table_wrap">
+        <div class="item_table_wrap">
             <h2>상품 정보</h2>
             <table id="itemTable">
                 <thead>
@@ -46,6 +47,7 @@
                 </tbody>
             </table>
         </div>
+        <canvas id="chart_wrap"></canvas>
     </div>
     <script src="/static/item_detail.js"></script>
 </body>
