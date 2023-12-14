@@ -9,9 +9,9 @@ function fetchItemData() {
 
   fetch(`/api/item/${idValue[1]}`)
     .then(response => response.json())
-    .then(data => {      
-        displayItem(data.item);
-        displayItemMonth(data.monthItem);
+    .then(data => {
+      displayItem(data.item);
+      displayItemMonth(data.monthItem); 
         
     })
     .catch(error => {
@@ -49,20 +49,58 @@ function displayItemMonth(monthItems) {
 }
 
 
-var ctx = document.getElementById('chart_wrap').getContext('2d');
 
-const mixedChart = new Chart(ctx, {
-  data: {
-      datasets: [{
+
+const drawChart = (labels, barData, lineData) => {
+  const ctx = document.getElementById('chart_wrap').getContext('2d');
+
+  const chart = new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: labels,
+      datasets: [
+        {
           type: 'bar',
-          label: 'Bar Dataset',
-          data: [10, 20, 30, 40]
-      }, {
+          label: '총 수익',
+          data: barData,
+          backgroundColor: 'rgba(75, 192, 192, 0.2)',
+          borderColor: 'rgba(75, 192, 192, 1)',
+          borderWidth: 1,
+        },
+        {
           type: 'line',
-          label: 'Line Dataset',
-          data: [5, 15, 25, 35],
-      }],
-      labels: ['January', 'February', 'March', 'April']
-  },
-  // options: options
-});
+          label: '주문 횟수',
+          data: lineData,
+          borderColor: 'rgba(255, 99, 132, 1)',
+          borderWidth: 1,
+          fill: false,
+        },
+      ],
+    },
+    options: {
+      scales: {
+        x: {
+          type: 'category',
+          labels: labels,
+        },
+        y: {
+          beginAtZero: true,
+        },
+      },
+    },
+  });
+};
+
+// 데이터베이스에서 아이템에 대한 월별 정보를 가져옵니다.
+getMonthItem(itemId)
+  .then((rows) => {
+    const labels = rows.map((row) => row.month);
+    const totalRevenueData = rows.map((row) => row.totalRevenue);
+    const orderCountData = rows.map((row) => row.count);
+
+    // 차트를 그립니다.
+    drawChart(labels, totalRevenueData, orderCountData);
+  })
+  .catch((error) => {
+    console.error('데이터를 가져오는 중 오류 발생:', error);
+  });
