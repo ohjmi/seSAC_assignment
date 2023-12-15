@@ -603,25 +603,3 @@ app.listen(port, () => {
 
 
 
-// function readDataFromTable(tableName) {
-//   const query = `SELECT * FROM ${tableName}`;
-
-//   db.each(query, (err, row) => {
-//     if (err) {
-//       console.error(err.message);
-//     } else {
-//       // 읽어온 각 행 데이터 활용
-//       console.log(row);
-//       return row;
-//     }
-//   });
-// }
-
-// 예시로 'user' 테이블을 읽어오는 경우
-
-
-// // 예시로 'item' 테이블을 읽어오는 경우
-// readDataFromTable('item');
-
-// // 예시로 'order' 테이블을 읽어오는 경우
-// readDataFromTable('order');
