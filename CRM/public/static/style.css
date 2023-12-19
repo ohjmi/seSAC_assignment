@@ -3,7 +3,7 @@ body {
     margin: 0 auto;
 }
 .wrap {
-    width: 95%;
+    width: 70%;
     margin: 0 auto;
 }
 ul, li, a {
@@ -62,7 +62,7 @@ select {
     overflow: auto;
 }
 table {
-    width: 100%;;
+    width: 100%;
     border-collapse: collapse;
     /* margin: 0 auto; */
 }
@@ -118,4 +118,8 @@ table tbody tr td a {
 }
 #topstore_wrap ul li {
     list-style: circle;
+}
+/* chart css */
+.chart_wrap {
+    height: 400px;
 }
